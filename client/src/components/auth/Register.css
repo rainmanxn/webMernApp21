@@ -1,0 +1,23 @@
+form {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0;
+}
+
+
+
+
+.inputForm {
+  width: 200px;
+}
+
+.submitButton {
+  margin-top: 10px;
+  margin-left: 20px;
+  width: 100px;
+}
+.addButton {
+  margin-left: 10px;
+  width: 90px;
+}
