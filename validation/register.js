@@ -31,6 +31,9 @@ module.exports = function validateRegisterInput(data) {
   if (!Validator.equals(data.password, data.password2)) {
     errors.password2 = 'Passwords must match';
   }
+  if (!data.acceptTerms) {
+    errors.acceptTerms = 'Accept Terms & Conditions is required'
+  }
   return {
     errors,
     isValid: isEmpty(errors),

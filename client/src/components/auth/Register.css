@@ -5,17 +5,14 @@ form {
   flex-grow: 0;
 }
 
-
-
-
 .inputForm {
   width: 200px;
 }
 
 .submitButton {
   margin-top: 10px;
-  margin-left: 20px;
-  width: 100px;
+  margin-left: 32px;
+  width: 319px;
 }
 .addButton {
   margin-left: 10px;
