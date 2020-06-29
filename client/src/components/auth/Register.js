@@ -6,7 +6,7 @@ import {
 import { Input, Button, Checkbox } from 'antd';
 import 'antd/dist/antd.css';
 import styled from 'styled-components';
-import './Register.css'
+import './Register.scss'
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { registerUser, setErrors } from "../../actions/authActions";
@@ -106,17 +106,30 @@ const ContainerCheckBox = styled.div`
 `;
 
 const MyTextInput = ({ label, ...props }) => {
-  const { id, name } = props;
+  let { id, name, errors } = props;
   const [field, meta] = useField(props);
+  if (!errors) {
+    errors = ''
+  }
+  const colorName = errors.name ? 'red' : '#D9D9D9'
+  const colorEmail = errors.email ? 'red' : '#D9D9D9'
+  // console.log(errors);
+  // console.log(color);
+  if (name === 'name') {
+    return (
+      <Container>
+        <label htmlFor={id || name}>{label}</label>
+        <Input style={{ width: 320, borderColor: colorName }} {...field} {...props} />
+      </Container>
+    );
+  }
   return (
     <Container>
       <label htmlFor={id || name}>{label}</label>
-      <Input style={{width: 320}} {...field} {...props} />
-      {meta.touched && meta.error ? (
-        <Error>{meta.error}</Error>
-      ) : null}
+      <Input style={{ width: 320, borderColor: colorEmail }} {...field} {...props} />
     </Container>
   );
+
 };
 
 const MyPasswordInput = ({ label, ...props }) => {
@@ -199,6 +212,7 @@ class Register extends React.Component {
                   type="text"
                   id="firstName"
                   className="inputForm"
+                  errors={errors}
                 />
                 <Error className="red-text">
                   {errors ? errors.name : null}
@@ -209,6 +223,7 @@ class Register extends React.Component {
                   type="text"
                   id="email"
                   className="inputForm"
+                  errors={errors}
                 />
                 <Error className="red-text">
                   {errors ? errors.email : null}

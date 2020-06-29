@@ -6,7 +6,7 @@ import { Input, Button } from 'antd';
 import 'antd/dist/antd.css';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import './Register.css'
+import './Register.scss'
 import { connect } from "react-redux";
 import { loginUser, setErrors } from "../../actions/authActions";
 
