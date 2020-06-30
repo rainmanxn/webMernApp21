@@ -13,6 +13,7 @@ import Login from './components/auth/Login';
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 import Header from './components/Header/Header';
+import Card from './components/Card/Card';
 
 // check logged
 if (localStorage.jwtToken) {
@@ -33,7 +34,8 @@ function App() {
       <Router>
         <div className="App">
             <Route path='/' component={Header}/>
-            <Route exact path='/' component={Register} />
+            <Route exact path='/' component={Card} />
+            <Route exact path='/create' component={Card} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
             <Switch>

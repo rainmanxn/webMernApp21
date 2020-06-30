@@ -20,6 +20,7 @@ const Text = styled.div`
   font-size: 18px;
   line-height: 28px;
   margin-left: 22px;
+  color: black;
 `
 
 
@@ -27,7 +28,9 @@ export default class Header extends Component {
   render() {
     return (
     <Wrapper>
-      <Text>Realworld Blog</Text>
+      <Link to='/'>
+        <Text>Realworld Blog</Text>
+      </Link>
       <div className='right_block'>
         <Link to='/login'>
           <Button type='text'>Sign In</Button>

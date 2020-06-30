@@ -46,7 +46,7 @@ const BodyRegister = styled.div`
 const Text = styled.div`
   width: 311px;
   margin-left: 36.5px;
-  margin-top: 30px;
+  margin-top: 48px;
   margin-bottom: 21px;
   font-family: Roboto,serif;
   font-style: normal;
@@ -107,7 +107,7 @@ const ContainerCheckBox = styled.div`
 
 const MyTextInput = ({ label, ...props }) => {
   let { id, name, errors } = props;
-  const [field, meta] = useField(props);
+  const [field] = useField(props);
   if (!errors) {
     errors = ''
   }
