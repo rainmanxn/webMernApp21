@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { loginUser, setErrors } from '../../actions/authActions';
 import PropTypes from 'prop-types';
+import __ from 'lodash';
 
 const { TextArea } = Input;
 
@@ -17,6 +18,16 @@ const Container = styled.div`
   flex-direction: column;
   flex-grow: 0;
   margin-top: 21px;
+`;
+
+const ContainerSkills = styled.div`
+  margin-bottom: 100px;
+  width: 550px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: row;
+  flex-grow: 0;
 `;
 
 const Error = styled.div`
@@ -59,7 +70,6 @@ const Text = styled.div`
 
 const Wrapper = styled.div`
   width: 938px;
-  height: 701px;
   margin-top: 59px;
   position: absolute; 
   background: #FFFFFF;
@@ -115,21 +125,75 @@ const MyPasswordInput = ({ label, ...props }) => {
   );
 };
 
-// const CreateArticle = () => {
-//   return (
-//   <BodyRegister>
-//     <Wrapper>
-//       <Text>
-//         Create new article
-//       </Text>
-//     </Wrapper>
-//   </BodyRegister>
-//   )
-// }
+const MyTagsList = ({ label, ...props }) => {
+  const { id, name } = props;
+  const [field, meta] = useField(props);
+  const { skills, updatestate } = props;
+  const addSkill = () => {
+    const element = {};
+    element.value = meta.value;
+    element.id = __.uniqueId();
+    updatestate([...skills, element]);
+  }
+  return (
+    <Container>
+      <label htmlFor={id || name}>{label}</label>
+      <ContainerSkills style={{marginBottom: 1}}>
+        <Input style={{width: 300}} placeholder='Tag' {...field} {...props} />
+        <Button
+          style={{borderColor: '#F5222D', color: '#F5222D'}}
+          id="remove-button"
+          className="addButton"
+          onClick={addSkill}
+        >
+          Delete
+        </Button>
+      </ContainerSkills>
+    </Container>
+  );
+};
+const MySkillsInput = ({ label, ...props }) => {
+  const { id, name } = props;
+  const [field, meta] = useField(props);
+  const { skills, updatestate } = props;
+  const addSkill = () => {
+    const element = {};
+    element.value = meta.value;
+    element.id = __.uniqueId();
+    updatestate([...skills, element]);
+  }
+  return (
+    <Container>
+      <ContainerSkills>
+        <Input style={{width: 300}} placeholder='Tag' {...field} {...props} />
+        <Button
+          style={{borderColor: '#F5222D', color: '#F5222D'}}
+          id="remove-button"
+          className="addButton"
+          onClick={addSkill}
+        >
+          Delete
+        </Button>
+        <Button
+          style={{borderColor: '#1890FF', color: '#1890FF'}}
+          id="add-button"
+          className="addButton"
+          onClick={addSkill}
+        >
+          Add tag
+        </Button>
+      </ContainerSkills>
+    </Container>
+  );
+};
 
 class CreateArticle extends React.Component {
   state = {
     skills: []
+  }
+  updatestate = (skills) => {
+    this.setState({ skills });
+    console.log(this.state.skills);
   }
   // componentDidMount() {
   //   if (this.props.auth.isAuth) {
@@ -150,6 +214,7 @@ class CreateArticle extends React.Component {
 
   render() {
     const { errors } = this.props;
+    const { skills } = this.state;
     return (
       <BodyRegister>
         <Wrapper>
@@ -192,7 +257,26 @@ class CreateArticle extends React.Component {
                     id="text"
                     className="inputForm"
                   />
-
+                  {skills.map(({ value, id }) => (
+                    <MyTagsList
+                      value={value}
+                      name={value}
+                      type="text"
+                      id={value}
+                      className="inputForm"
+                      key={id}
+                      label=""
+                    />
+                  ))}
+                  <MySkillsInput
+                    label="Tags"
+                    id="skill"
+                    name="skill"
+                    type="text"
+                    className="inputForm"
+                    skills={skills}
+                    updatestate={this.updatestate}
+                  />
                   {/*<Button type="primary" className="loginButton" form="myForm" key="submit" htmlType="submit" loading={this.props.auth.loading}>*/}
                   {/*  Login*/}
                   {/*</Button>*/}
