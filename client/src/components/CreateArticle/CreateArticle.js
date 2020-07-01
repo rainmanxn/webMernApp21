@@ -20,8 +20,8 @@ const Container = styled.div`
   margin-top: 21px;
 `;
 
-const ContainerSkills = styled.div`
-  margin-bottom: 100px;
+const Containertags = styled.div`
+  //margin-bottom: 100px;
   width: 550px;
   display: flex;
   align-items: flex-start;
@@ -66,6 +66,11 @@ const Text = styled.div`
   line-height: 28px;
   text-align: center;
   color: #262626;
+`
+
+const LabelTag = styled.div`
+  margin-left: 32px;
+  margin-top: 20px;
 `
 
 const Wrapper = styled.div`
@@ -128,49 +133,50 @@ const MyPasswordInput = ({ label, ...props }) => {
 const MyTagsList = ({ label, ...props }) => {
   const { id, name } = props;
   const [field, meta] = useField(props);
-  const { skills, updatestate } = props;
-  const addSkill = () => {
-    const element = {};
-    element.value = meta.value;
-    element.id = __.uniqueId();
-    updatestate([...skills, element]);
+  let { tags, updatestate } = props;
+
+  const removetag = (id) => () => {
+    console.log(tags);
+    tags = tags.filter((el) => el.id !== id);
+    console.log(tags)
+    updatestate(tags)
   }
   return (
-    <Container>
+    <Container style={{marginTop: 5}}>
       <label htmlFor={id || name}>{label}</label>
-      <ContainerSkills style={{marginBottom: 1}}>
-        <Input style={{width: 300}} placeholder='Tag' {...field} {...props} />
+      <Containertags style={{marginBottom: 1}}>
+        <Input style={{width: 310}} placeholder='Tag' {...field} {...props} />
         <Button
           style={{borderColor: '#F5222D', color: '#F5222D'}}
           id="remove-button"
           className="addButton"
-          onClick={addSkill}
+          onClick={removetag(id)}
         >
           Delete
         </Button>
-      </ContainerSkills>
+      </Containertags>
     </Container>
   );
 };
-const MySkillsInput = ({ label, ...props }) => {
+const MytagsInput = ({ label, ...props }) => {
   const { id, name } = props;
   const [field, meta] = useField(props);
-  const { skills, updatestate } = props;
-  const addSkill = () => {
+  const { tags, updatestate } = props;
+  const addtag = () => {
     const element = {};
     element.value = meta.value;
     element.id = __.uniqueId();
-    updatestate([...skills, element]);
+    updatestate([...tags, element]);
   }
   return (
-    <Container>
-      <ContainerSkills>
-        <Input style={{width: 300}} placeholder='Tag' {...field} {...props} />
+    <Container style={{marginTop: 5}}>
+      <Containertags>
+        <Input style={{width: 310}} placeholder='Tag' {...field} {...props} />
         <Button
           style={{borderColor: '#F5222D', color: '#F5222D'}}
           id="remove-button"
           className="addButton"
-          onClick={addSkill}
+          onClick={addtag}
         >
           Delete
         </Button>
@@ -178,22 +184,22 @@ const MySkillsInput = ({ label, ...props }) => {
           style={{borderColor: '#1890FF', color: '#1890FF'}}
           id="add-button"
           className="addButton"
-          onClick={addSkill}
+          onClick={addtag}
         >
           Add tag
         </Button>
-      </ContainerSkills>
+      </Containertags>
     </Container>
   );
 };
 
 class CreateArticle extends React.Component {
   state = {
-    skills: []
+    tags: []
   }
-  updatestate = (skills) => {
-    this.setState({ skills });
-    console.log(this.state.skills);
+  updatestate = (tags) => {
+    this.setState({ tags });
+    console.log(this.state.tags);
   }
   // componentDidMount() {
   //   if (this.props.auth.isAuth) {
@@ -214,7 +220,7 @@ class CreateArticle extends React.Component {
 
   render() {
     const { errors } = this.props;
-    const { skills } = this.state;
+    const { tags } = this.state;
     return (
       <BodyRegister>
         <Wrapper>
@@ -224,14 +230,18 @@ class CreateArticle extends React.Component {
               this.props
             }
             onSubmit={(fields) => {
-              const { loginUser } = this.props;
-              const { email, password } = fields;
-              const loggedUser = {
-                email,
-                password
+              // const { loginUser } = this.props;
+              const { title, description, text } = fields;
+              const { tags } = this.state;
+              const articleFields = {
+                title,
+                description,
+                text,
+                tags
               }
-              loginUser(loggedUser);
-              console.log(loggedUser)
+              // loginUser(loggedUser);
+              console.log('SUBMIT')
+              console.log(articleFields)
             }}
             render={() => (
               <Form id="myForm">
@@ -257,29 +267,32 @@ class CreateArticle extends React.Component {
                     id="text"
                     className="inputForm"
                   />
-                  {skills.map(({ value, id }) => (
+                  <LabelTag>Tags</LabelTag>
+                  {tags.map(({ value, id }) => (
                     <MyTagsList
                       value={value}
                       name={value}
                       type="text"
-                      id={value}
+                      id={id}
                       className="inputForm"
                       key={id}
+                      tags={tags}
+                      updatestate={this.updatestate}
                       label=""
                     />
                   ))}
-                  <MySkillsInput
+                  <MytagsInput
                     label="Tags"
-                    id="skill"
-                    name="skill"
+                    id="tag"
+                    name="tag"
                     type="text"
                     className="inputForm"
-                    skills={skills}
+                    tags={tags}
                     updatestate={this.updatestate}
                   />
-                  {/*<Button type="primary" className="loginButton" form="myForm" key="submit" htmlType="submit" loading={this.props.auth.loading}>*/}
-                  {/*  Login*/}
-                  {/*</Button>*/}
+                  <Button type="primary" className="loginButton" form="myForm" key="submit" htmlType="submit">
+                  Send
+                  </Button>
                 </FormContainer>
               </Form>
             )}
