@@ -151,6 +151,7 @@ const DataPost = styled.div`
 
 const Card = (props) => {
   const {title, description, text, tags, date} = props;
+  // console.log("!!!!!TAGS", tags)
   // console.log(title, description, text, tags, date);
   return (
     // <BodyCard>

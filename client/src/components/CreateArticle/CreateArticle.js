@@ -4,7 +4,7 @@ import { Form, Formik, useField } from 'formik';
 import { Button, Input } from 'antd';
 // import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getArticles } from '../../actions/articleActions';
+import { getArticles, postArticle } from '../../actions/articleActions';
 import PropTypes from 'prop-types';
 import __ from 'lodash';
 
@@ -208,7 +208,7 @@ class CreateArticle extends React.Component {
   // }
 
   render() {
-    const { articles } = this.props;
+    const { articles, postArticle } = this.props;
     const { tags } = this.state;
     // console.log('articles', articles.articles[0])
     return (
@@ -229,6 +229,7 @@ class CreateArticle extends React.Component {
                 text,
                 tags
               }
+              postArticle(articleFields);
               // loginUser(loggedUser);
               console.log('SUBMIT')
               console.log(articleFields)
@@ -301,7 +302,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getArticles }
+  { getArticles, postArticle }
 )(CreateArticle);
 
 MyTextInput.propTypes = {

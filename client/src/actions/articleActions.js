@@ -8,7 +8,13 @@ export const getArticles = () => async (dispatch) => {
   dispatch(setArticles(response.data))
   dispatch(stopArticleLoading());
 }
-
+export const postArticle = (article) => async (dispatch) => {
+  dispatch(setArticleLoading());
+  const response = await axios.post('api/articles/create', article);
+  console.log('RESPONSE', response.data);
+  dispatch(postArticleAction(article));
+  dispatch(stopArticleLoading());
+}
 
 
 
@@ -28,6 +34,13 @@ export const stopArticleLoading = () => {
 export const setArticles = (payload) => {
   return {
     type: GET_ARTICLES,
+    payload
+  }
+}
+
+export const postArticleAction = (payload) => {
+  return {
+    type: POST_ARTICLE,
     payload
   }
 }

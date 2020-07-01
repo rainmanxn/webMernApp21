@@ -15,7 +15,7 @@ const ArticleSchema = new Schema({
     type: String,
     required: true
   },
-  skills: {
+  tags: {
     type: Object,
   },
   date: {

@@ -57,14 +57,14 @@ class Main extends React.Component {
       const obj = Object.assign({}, el);
       const { title, description, text, tags, date } = obj;
       console.log(title, description, text, tags, date);
-      const formatedDate = this.getDate(date)
+      const formattedDate = this.getDate(date)
       return (
           <Card
             title={title}
             description={description}
             text={text}
             tags={tags}
-            date={formatedDate}
+            date={formattedDate}
           />
       )
 

@@ -14,6 +14,14 @@ const articleReducer = (state = initState, action) => {
         ...state,
         articles
       }}
+      case POST_ARTICLE: {
+      // console.log('action.payload', action.payload);
+      const { articles } = state;
+      const { article } = action.payload;
+      return {
+        ...state,
+        articles: {...articles, article}
+      }}
     case LOADING_ARTICLE:
       return {
         ...state,

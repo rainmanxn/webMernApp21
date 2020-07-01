@@ -6,12 +6,12 @@ const router = express.Router();
 
 router.post('/create', async (req, res) => {
   try {
-    const { title, description, text, skills } = req.body;
+    const { title, description, text, tags } = req.body;
     const article = new Article ({
       title,
       description,
       text,
-      skills
+      tags
     });
     await article.save();
     res.status(201).json({ message: 'Статья создан' })
