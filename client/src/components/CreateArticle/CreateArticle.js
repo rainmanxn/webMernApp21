@@ -4,9 +4,10 @@ import { Form, Formik, useField } from 'formik';
 import { Button, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { loginUser, setErrors } from '../../actions/authActions';
+import { getArticles } from '../../actions/articleActions';
 import PropTypes from 'prop-types';
 import __ from 'lodash';
+import axios from 'axios';
 
 const { TextArea } = Input;
 
@@ -133,13 +134,13 @@ const MyPasswordInput = ({ label, ...props }) => {
 const MyTagsList = ({ label, ...props }) => {
   const { id, name } = props;
   const [field, meta] = useField(props);
-  let { tags, updatestate } = props;
+  let { tags, updatest } = props;
 
   const removetag = (id) => () => {
     console.log(tags);
     tags = tags.filter((el) => el.id !== id);
     console.log(tags)
-    updatestate(tags)
+    updatest(tags)
   }
   return (
     <Container style={{marginTop: 5}}>
@@ -161,12 +162,12 @@ const MyTagsList = ({ label, ...props }) => {
 const MytagsInput = ({ label, ...props }) => {
   const { id, name } = props;
   const [field, meta] = useField(props);
-  const { tags, updatestate } = props;
+  const { tags, updatest } = props;
   const addtag = () => {
     const element = {};
     element.value = meta.value;
     element.id = __.uniqueId();
-    updatestate([...tags, element]);
+    updatest([...tags, element]);
   }
   return (
     <Container style={{marginTop: 5}}>
@@ -197,7 +198,23 @@ class CreateArticle extends React.Component {
   state = {
     tags: []
   }
-  updatestate = (tags) => {
+
+  componentDidMount() {
+    const { getArticles } = this.props;
+    getArticles();
+    // this.getNewArticles();
+  }
+
+  // getNewArticles = async () => {
+  //   try {
+  //     const response = await axios.get('http://localhost:5000/api/articles/articles');
+  //     console.log(response.data);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+
+  updateState = (tags) => {
     this.setState({ tags });
     console.log(this.state.tags);
   }
@@ -219,8 +236,9 @@ class CreateArticle extends React.Component {
   // }
 
   render() {
-    const { errors } = this.props;
+    const { articles } = this.props;
     const { tags } = this.state;
+    console.log('articles', articles.articles)
     return (
       <BodyRegister>
         <Wrapper>
@@ -277,7 +295,7 @@ class CreateArticle extends React.Component {
                       className="inputForm"
                       key={id}
                       tags={tags}
-                      updatestate={this.updatestate}
+                      updatest={this.updateState}
                       label=""
                     />
                   ))}
@@ -288,7 +306,7 @@ class CreateArticle extends React.Component {
                     type="text"
                     className="inputForm"
                     tags={tags}
-                    updatestate={this.updatestate}
+                    updatest={this.updateState}
                   />
                   <Button type="primary" className="loginButton" form="myForm" key="submit" htmlType="submit">
                   Send
@@ -304,25 +322,20 @@ class CreateArticle extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors,
-  loading: state.loading
+  articles: state.articles,
+  // errors: state.errors,
+  loadingArticle: state.loadingArticle
 })
 
-// export default connect(
-//   mapStateToProps,
-//   { loginUser, setErrors }
-// )(CreateArticle);
+export default connect(
+  mapStateToProps,
+  { getArticles }
+)(CreateArticle);
 
 MyTextInput.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
 };
-MyPasswordInput.propTypes = {
-  id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-};
 
-export default CreateArticle;
+

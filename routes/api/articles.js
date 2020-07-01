@@ -16,15 +16,22 @@ router.post('/create', async (req, res) => {
     await article.save();
     res.status(201).json({ message: 'Статья создан' })
   } catch (e) {
-    console.log(e);
     res
       .status(500)
       .json({ message: 'Что-то пошло не так, попробуйте снова' });
   }
 })
 
-// router.get('/articles', async (req, res) => {
-//
-// })
+router.get('/articles', async (req, res) => {
+  try {
+      const articles = await Article.find();
+      res.status(200).json({ articles })
+
+  } catch (e) {
+    res
+      .status(500)
+      .json({ message: 'Что-то пошло не так, попробуйте снова' });
+  }
+})
 
 module.exports = router;

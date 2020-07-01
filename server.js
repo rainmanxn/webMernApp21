@@ -6,6 +6,12 @@ const articles = require('./routes/api/articles');
 
 const app = express();
 
+const cors = require('cors');
+
+app.set('view engine', 'ejs');
+app.use(bodyParser.json());
+app.use(cors());
+
 // Bodyparser middleware
 app.use(
   bodyParser.urlencoded({
