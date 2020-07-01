@@ -2,12 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { Form, Formik, useField } from 'formik';
 import { Button, Input } from 'antd';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getArticles } from '../../actions/articleActions';
 import PropTypes from 'prop-types';
 import __ from 'lodash';
-import axios from 'axios';
 
 const { TextArea } = Input;
 
@@ -29,18 +28,6 @@ const Containertags = styled.div`
   justify-content: flex-start;
   flex-direction: row;
   flex-grow: 0;
-`;
-
-const Error = styled.div`
-  font-family: Roboto,serif;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  margin-left: 32px;
-  color: tomato;
-  &:last-child {
-    margin-left: 5px;
-  }
 `;
 
 const FormContainer = styled.div`
@@ -117,23 +104,10 @@ const MyTextAreaInput = ({ label, ...props }) => {
   );
 };
 
-const MyPasswordInput = ({ label, ...props }) => {
-  const { id, name } = props;
-  const [field, meta] = useField(props);
-  return (
-    <Container>
-      <label htmlFor={id || name}>{label}</label>
-      <Input.Password style={{width: 874}} {...field} {...props} />
-      {meta.touched && meta.error ? (
-        <Error>{meta.error}</Error>
-      ) : null}
-    </Container>
-  );
-};
 
 const MyTagsList = ({ label, ...props }) => {
-  const { id, name } = props;
-  const [field, meta] = useField(props);
+  const { id, name, value } = props;
+  const [field] = useField(props);
   let { tags, updatest } = props;
 
   const removetag = (id) => () => {
@@ -146,7 +120,7 @@ const MyTagsList = ({ label, ...props }) => {
     <Container style={{marginTop: 5}}>
       <label htmlFor={id || name}>{label}</label>
       <Containertags style={{marginBottom: 1}}>
-        <Input style={{width: 310}} placeholder='Tag' {...field} {...props} />
+        <Input style={{width: 310}} placeholder='Tag' {...field} value={value} />
         <Button
           style={{borderColor: '#F5222D', color: '#F5222D'}}
           id="remove-button"
@@ -160,7 +134,6 @@ const MyTagsList = ({ label, ...props }) => {
   );
 };
 const MytagsInput = ({ label, ...props }) => {
-  const { id, name } = props;
   const [field, meta] = useField(props);
   const { tags, updatest } = props;
   const addtag = () => {
@@ -172,7 +145,7 @@ const MytagsInput = ({ label, ...props }) => {
   return (
     <Container style={{marginTop: 5}}>
       <Containertags>
-        <Input style={{width: 310}} placeholder='Tag' {...field} {...props} />
+        <Input style={{width: 310}} placeholder='Tag' {...field} />
         <Button
           style={{borderColor: '#F5222D', color: '#F5222D'}}
           id="remove-button"
@@ -215,8 +188,7 @@ class CreateArticle extends React.Component {
   // };
 
   updateState = (tags) => {
-    this.setState({ tags });
-    console.log(this.state.tags);
+    this.setState(() => {return {tags}});
   }
   // componentDidMount() {
   //   if (this.props.auth.isAuth) {
@@ -238,7 +210,7 @@ class CreateArticle extends React.Component {
   render() {
     const { articles } = this.props;
     const { tags } = this.state;
-    console.log('articles', articles.articles)
+    console.log('articles', articles.articles[0])
     return (
       <BodyRegister>
         <Wrapper>

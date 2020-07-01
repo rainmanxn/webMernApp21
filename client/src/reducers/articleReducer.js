@@ -8,10 +8,11 @@ const initState = {
 const articleReducer = (state = initState, action) => {
   switch (action.type) {
     case GET_ARTICLES: {
-      console.log('action.payload', action.payload);
+      // console.log('action.payload', action.payload);
+      const { articles } = action.payload;
       return {
         ...state,
-        articles: action.payload
+        articles
       }}
     case LOADING_ARTICLE:
       return {
