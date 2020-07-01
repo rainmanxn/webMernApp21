@@ -34,12 +34,10 @@ const CountLikes = styled.div`
 
 const Wrapper = styled.div`
   position: relative;
-  margin-left: 150px;
-  margin-top: 50px;
+  //margin-left: 150px;
+  margin-top: 10px;
   width: 941px;
   height: 140px;
-  left: -3px;
-  top: 0px;
   //border: 1px solid black;
   background: #FFFFFF;
   border-radius: 5px;
@@ -151,13 +149,15 @@ const DataPost = styled.div`
   color: rgba(0, 0, 0, 0.5);
 `
 
-const Card = () => {
+const Card = (props) => {
+  const {title, description, text, tags, date} = props;
+  // console.log(title, description, text, tags, date);
   return (
-    <BodyCard>
+    // <BodyCard>
       <Wrapper>
         <LeftHalf>
           <Header>
-            <Title>Some article text</Title>
+            <Title>{title}</Title>
             <Like img={unlike} />
             <CountLikes>13</CountLikes>
           </Header>
@@ -165,10 +165,7 @@ const Card = () => {
             <Tag>Tag1</Tag>
           </TagBlock>
           <TextArticle>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-            enim ad minim veniam, quis nostrud exercitation ullamco laboris
-            nisi ut aliquip ex ea commodo consequat.
+            {description}
           </TextArticle>
         </LeftHalf>
         <RightHalf>
@@ -177,13 +174,13 @@ const Card = () => {
               John Doe
             </Name>
             <DataPost>
-              March 5, 2020
+              {date}
             </DataPost>
           </Info>
           <Avatar img={avatar} />
         </RightHalf>
       </Wrapper>
-    </BodyCard>
+    // </BodyCard>
   )
 }
 

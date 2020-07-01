@@ -210,7 +210,7 @@ class CreateArticle extends React.Component {
   render() {
     const { articles } = this.props;
     const { tags } = this.state;
-    console.log('articles', articles.articles[0])
+    // console.log('articles', articles.articles[0])
     return (
       <BodyRegister>
         <Wrapper>

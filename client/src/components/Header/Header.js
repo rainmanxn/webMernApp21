@@ -28,7 +28,7 @@ export default class Header extends Component {
   render() {
     return (
     <Wrapper>
-      <Link to='/'>
+      <Link to='/main'>
         <Text>Realworld Blog</Text>
       </Link>
       <div className='right_block'>
