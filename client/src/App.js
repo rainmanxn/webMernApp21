@@ -16,6 +16,7 @@ import Header from './components/Header/Header';
 import Card from './components/Card/Card';
 import CreateArticle from './components/CreateArticle/CreateArticle';
 import Main from './components/Main/Main';
+import Article from './components/Article/Article';
 
 
 // check logged
@@ -38,10 +39,16 @@ function App() {
         <div className="App">
             <Route path='/' component={Header}/>
             <Route exact path='/' component={Main} />
-            <Route exact path='/create' component={CreateArticle} />
+            <Route path='/articles/:id' render={({ match }) => {
+              const { id } = match.params;
+              console.log('MATCH', id)
+             return <Article item={id}/>
+            }} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
+
             <Switch>
+              <PrivateRoute path='/create' component={CreateArticle} />
               <PrivateRoute path='/dashboard' component={Dashboard} />
             </Switch>
         </div>

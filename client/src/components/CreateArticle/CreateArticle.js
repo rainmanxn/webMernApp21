@@ -225,16 +225,20 @@ class CreateArticle extends React.Component {
               // const { loginUser } = this.props;
               const { title, description, text } = fields;
               const { tags } = this.state;
+              const { name: userName } = user;
+              console.log('USER!!!    ', userName);
               const articleFields = {
                 title,
                 description,
                 text,
-                tags
+                tags,
+                userName
               }
               postArticle(articleFields);
               // loginUser(loggedUser);
               console.log('SUBMIT')
               console.log(articleFields)
+              this.props.history.push("/")
             }}
             render={() => (
               <Form id="myForm">

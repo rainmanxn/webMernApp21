@@ -18,6 +18,9 @@ const ArticleSchema = new Schema({
   tags: {
     type: Object,
   },
+  userName: {
+    type: String
+  },
   date: {
     type: Date,
     default: Date.now

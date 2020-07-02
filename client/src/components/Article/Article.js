@@ -1,14 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
-import unlike from './unliked.svg';
-import avatar from './avatar.png';
+import unlike from '../Card/unliked.svg'
+import avatar from '../Card/avatar.png';
+import { connect } from 'react-redux';
+import { getArticles } from '../../actions/articleActions';
+import { Button } from 'antd';
+import 'antd/dist/antd.css';
 import { Link } from 'react-router-dom';
-// import { createBrowserHistory } from 'history';
-// let history = createBrowserHistory();
-// import history from 'history/browser';
-// let history = createBrowserHistory({
-//   window: iframe.contentWindow
-// });
+
+const Body = styled.div`
+padding-top: 1px;
+  background: #E5E5E5;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+`
 
 const Like = styled.img.attrs((props) => ({ src: props.img }))`
   height: 14px;
@@ -42,15 +52,25 @@ const CountLikes = styled.div`
 const Wrapper = styled.div`
   position: relative;
   //margin-left: 150px;
-  margin-top: 10px;
+  margin-top: 24px;
   width: 941px;
-  height: 140px;
+  //height: 140px;
   //border: 1px solid black;
   background: #FFFFFF;
   border-radius: 5px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+`
+const InsideWrapper = styled.div`
+  justify-content: space-between;
+  display: flex;
+`
+const ButtonWrapper = styled.div`
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
 `
 
 const LeftHalf = styled.div`
@@ -63,21 +83,14 @@ const LeftHalf = styled.div`
   flex-direction: column;
 `
 const RightHalf = styled.div`
-  margin-top: 15px;
+  margin-top: 60px;
   margin-right: 14px;
   width: 300px;
   height: 50px;
   //border: 1px solid black;
   display: flex;
+  flex-direction: column;
   justify-content: flex-end;
-`
-const BodyCard = styled.div`
-  background: #E5E5E5;
-  width: 100%;
-  height: 100vh;
-  position: relative;
-  display: flex;
-  justify-content: center;
 `
 
 const Header = styled.div`
@@ -130,6 +143,17 @@ const TextArticle = styled.div`
   line-height: 22px;
   color: rgba(0, 0, 0, 0.75);
 `
+const MainText = styled.div`
+  margin-top: 25px;
+  width: 880px;
+  margin-left: 19px;
+  font-family: Inter,serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 28px;
+  color: rgba(0, 0, 0, 0.75);
+`
 const Info = styled.div`
   //width: 150px;
   height: 46px;
@@ -158,46 +182,48 @@ const DataPost = styled.div`
   color: rgba(0, 0, 0, 0.5);
 `
 
-class Card extends React.Component {
-  // const {title, description, text, tags, date} = props;
-  render() {
-    const { title, description, tags, date, userName, id } = this.props;
-    // console.log('userName', userName)
-    let listTags = Object.values({ ...tags });
-    const renderTags = () => {
-      return listTags.map(({ value, id }) => {
-        return (
-          <Tag key={id}>{value}</Tag>
-        )
-      })
-    }
+const Article = (props) => {
+  const { articles, item } = props;
+  const articlesList = articles.articles;
+  const arr = Object.values(articlesList);
+  const currentArticle = arr.filter(({ _id }) => _id === item)[0];
 
-    const linkCard = () => {
-      console.log(id)
-      // history.push("/create")
-      return (
-        <Link to='/create' />
-      )
-    }
-    // console.log(title, description, text, tags, date);
+  if (!currentArticle) {
     return (
-      // <BodyCard>
-      <Link to={`/articles/${id}`}>
-      <Wrapper onClick={linkCard}>
-        <LeftHalf>
-          <Header>
-            <Title>{title}</Title>
-            <Like img={unlike}/>
-            <CountLikes>13</CountLikes>
-          </Header>
-          <TagBlock>
-            {renderTags()}
-          </TagBlock>
-          <TextArticle>
-            {description}
-          </TextArticle>
-        </LeftHalf>
-        <RightHalf>
+      <Body>
+        Упс, что-то пошло не так
+      </Body>
+    )
+  }
+  const {title, description, tags, date, userName, text } = currentArticle;
+  let listTags = Object.values({...tags});
+  const renderTags = () => { return listTags.map(({ value, id }) => {
+    return (
+      <Tag key={id}>{value}</Tag>
+    )
+  })
+  }
+
+  // console.log(title, description, text, tags, date);
+  return (
+    <Body>
+    <Wrapper>
+      <InsideWrapper>
+      <LeftHalf>
+        <Header>
+          <Title>{title}</Title>
+          <Like img={unlike} />
+          <CountLikes>13</CountLikes>
+        </Header>
+        <TagBlock>
+          {renderTags()}
+        </TagBlock>
+        <TextArticle>
+          {description}
+        </TextArticle>
+      </LeftHalf>
+      <RightHalf>
+        <InsideWrapper>
           <Info>
             <Name>
               {userName}
@@ -206,12 +232,32 @@ class Card extends React.Component {
               {date}
             </DataPost>
           </Info>
-          <Avatar img={avatar}/>
-        </RightHalf>
-      </Wrapper>
-      </Link>
-    )
-  }
+          <Avatar img={avatar} />
+        </InsideWrapper>
+        <ButtonWrapper>
+          <Link to='/create'>
+            <Button className='button_del'>Delete</Button>
+          </Link>
+          <Link to='/create'>
+            <Button className='button_edit'>Edit</Button>
+          </Link>
+        </ButtonWrapper>
+      </RightHalf>
+      </InsideWrapper>
+      <MainText>
+        {text}
+      </MainText>
+    </Wrapper>
+    </Body>
+  )
 }
 
-export default Card;
+const mapStateToProps = state => ({
+  articles: state.articles,
+  loadingArticle: state.loadingArticle
+})
+
+export default connect(
+  mapStateToProps,
+  { getArticles }
+)(Article);

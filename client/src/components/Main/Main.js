@@ -54,17 +54,20 @@ class Main extends React.Component {
     // рендерю карточки
     const renderCard = () => arr.map((el) => {
       const obj = Object.assign({}, el);
-      const { title, description, text, tags, date, _id } = obj;
+      const { title, description, text, tags, date, userName, _id } = obj;
       // console.log(title, description, text, tags, date);
+      // console.log(_id);
       const formattedDate = this.getDate(date)
       return (
           <Card
+            id={_id}
             key={_id}
             title={title}
             description={description}
             text={text}
             tags={tags}
             date={formattedDate}
+            userName={userName}
           />
       )
 

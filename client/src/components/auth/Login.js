@@ -123,7 +123,7 @@ class Login extends React.Component {
 
   componentDidMount() {
     if (this.props.auth.isAuth) {
-      this.props.history.push("/dashboard");
+      this.props.history.push("/");
     }
   }
 
@@ -131,7 +131,7 @@ class Login extends React.Component {
     const { setErrors } = this.props;
     console.log('ERRORS:', this.props.errors)
     if (this.props.auth.isAuth) {
-      this.props.history.push('/dashboard')
+      this.props.history.push('/')
     }
     if (prevProps.errors !== this.props.errors) {
       setErrors(this.props.errors);

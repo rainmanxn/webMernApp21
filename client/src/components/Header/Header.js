@@ -7,6 +7,31 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { logoutUser } from '../../actions/authActions';
+import avatar from '../Card/avatar.png';
+
+const Avatar = styled.img.attrs((props) => ({ src: props.img }))`
+  height: 46px;
+  width: 46px;
+  margin-right: 27px;
+  margin-left: 13px;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const UserName = styled.div`
+  font-family: Inter,serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 28px;
+  color: rgba(0, 0, 0, 0.85);
+`
+
+const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+`
 
 const Wrapper = styled.div`
   width: 100%;
@@ -30,12 +55,18 @@ const Text = styled.div`
  const Header = (props) => {
   const { user } = props.auth;
   const isLogged = !(Object.keys(user).length === 0);
-   console.log(isLogged);
+  const onLogoutClick = e => {
+     e.preventDefault();
+     const { logoutUser } = props;
+     logoutUser();
+   }
+
+
    const renderLogOut = (logged) => {
      if (logged) {
        return (
          <Link to='/'>
-          <Button className='button_logOut'>Log OUT</Button>
+          <Button className='button_logOut' onClick={onLogoutClick}>Log OUT</Button>
          </Link>
        )
      }
@@ -62,16 +93,43 @@ const Text = styled.div`
      return null
    }
 
+   const renderUser = (logged) => {
+     if (logged) {
+       return (
+         <UserInfo>
+           <UserName>{user.name}</UserName>
+           <Avatar img={avatar} />
+         </UserInfo>
+       )
+     }
+     return null
+   }
+
+   const renderCrete = (logged) => {
+     if (logged) {
+       return (
+         <Link to='/create'>
+           <Button className='button_create'>Create article</Button>
+         </Link>
+       )
+     }
+     return null
+   }
+
 
     return (
     <Wrapper>
-      <Link to='/main'>
+      <Link to='/'>
         <Text>Realworld Blog</Text>
       </Link>
       <div className='right_block'>
-        {renderLogIn(isLogged)}
-        {renderRegister(isLogged)}
-        {renderLogOut(isLogged)}
+        <UserInfo>
+          {renderCrete(isLogged)}
+          {renderUser(isLogged)}
+          {renderLogIn(isLogged)}
+          {renderRegister(isLogged)}
+          {renderLogOut(isLogged)}
+        </UserInfo>
       </div>
     </Wrapper>
     )
