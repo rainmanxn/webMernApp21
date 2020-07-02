@@ -210,6 +210,8 @@ class CreateArticle extends React.Component {
   render() {
     const { articles, postArticle } = this.props;
     const { tags } = this.state;
+    const { user } = this.props.auth;
+    // console.log('USER', user);
     // console.log('articles', articles.articles[0])
     return (
       <BodyRegister>
@@ -297,7 +299,8 @@ class CreateArticle extends React.Component {
 const mapStateToProps = state => ({
   articles: state.articles,
   // errors: state.errors,
-  loadingArticle: state.loadingArticle
+  loadingArticle: state.loadingArticle,
+  auth: state.auth
 })
 
 export default connect(

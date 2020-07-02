@@ -44,7 +44,6 @@ class Main extends React.Component {
     const { articles: {articles} }  = this.props;
     const arr = Object.values(articles);
     // console.log('arr!!!', arr[0]);
-    const obj = Object.assign({}, arr[0])
     // console.log(obj.date);
     // const card = arr[0];
     // console.log(this.getDate(obj.date))
@@ -53,13 +52,14 @@ class Main extends React.Component {
 
     // const render = () => arr.map((el) => console.log(el));
     // рендерю карточки
-    const render2 = () => arr.map((el) => {
+    const renderCard = () => arr.map((el) => {
       const obj = Object.assign({}, el);
-      const { title, description, text, tags, date } = obj;
-      console.log(title, description, text, tags, date);
+      const { title, description, text, tags, date, _id } = obj;
+      // console.log(title, description, text, tags, date);
       const formattedDate = this.getDate(date)
       return (
           <Card
+            key={_id}
             title={title}
             description={description}
             text={text}
@@ -69,10 +69,10 @@ class Main extends React.Component {
       )
 
     });
-    render2();
+    // renderCard();
     return (
       <Body>
-        {render2()}
+        {renderCard()}
       </Body>)
       // <Body>
       //   <Card

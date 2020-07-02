@@ -100,7 +100,8 @@ const Tag = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.5);
   height: 20px;
   padding: 2px;
-  margin: 4px 0;
+  margin-top: 4px;
+  margin-right: 5px;
   box-sizing: border-box;
   border-radius: 2px;
   font-family: Inter,serif;
@@ -150,8 +151,15 @@ const DataPost = styled.div`
 `
 
 const Card = (props) => {
-  const {title, description, text, tags, date} = props;
-  // console.log("!!!!!TAGS", tags)
+  // const {title, description, text, tags, date} = props;
+  const {title, description, tags, date} = props;
+  let listTags = Object.values({...tags});
+  const renderTags = () => { return listTags.map(({ value, id }) => {
+      return (
+        <Tag key={id}>{value}</Tag>
+      )
+    })
+  }
   // console.log(title, description, text, tags, date);
   return (
     // <BodyCard>
@@ -163,7 +171,7 @@ const Card = (props) => {
             <CountLikes>13</CountLikes>
           </Header>
           <TagBlock>
-            <Tag>Tag1</Tag>
+            {renderTags()}
           </TagBlock>
           <TextArticle>
             {description}

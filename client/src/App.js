@@ -37,8 +37,7 @@ function App() {
       <Router>
         <div className="App">
             <Route path='/' component={Header}/>
-            <Route exact path='/' component={Card} />
-            <Route exact path='/main' component={Main} />
+            <Route exact path='/' component={Main} />
             <Route exact path='/create' component={CreateArticle} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
