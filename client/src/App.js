@@ -17,6 +17,9 @@ import Card from './components/Card/Card';
 import CreateArticle from './components/CreateArticle/CreateArticle';
 import Main from './components/Main/Main';
 import Article from './components/Article/Article';
+import ArticlePrivateRoute from './components/private-route/ArticlePrivateRoute';
+import EditArticle from './components/EditArticle/EditArticle';
+import EditArticlePrivateRoute from './components/private-route/EditArticlePrivateRoute';
 
 
 // check logged
@@ -39,17 +42,20 @@ function App() {
         <div className="App">
             <Route path='/' component={Header}/>
             <Route exact path='/' component={Main} />
-            <Route path='/articles/:id' render={({ match }) => {
-              const { id } = match.params;
-              console.log('MATCH', id)
-             return <Article item={id}/>
-            }} />
+            {/*<Route path='/articles/:id' render={({ match }) => {*/}
+            {/*  const { id } = match.params;*/}
+            {/*  console.log('MATCH', id)*/}
+            {/* return <Article item={id}/>*/}
+            {/*}} />*/}
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
 
             <Switch>
               <PrivateRoute path='/create' component={CreateArticle} />
               <PrivateRoute path='/dashboard' component={Dashboard} />
+              {/*<PrivateRoute path='/edit' component={EditArticle} />*/}
+              <ArticlePrivateRoute path='/articles/:id' />
+              <EditArticlePrivateRoute path='/edit/:id' />
             </Switch>
         </div>
       </Router>

@@ -7,6 +7,7 @@ import { getArticles } from '../../actions/articleActions';
 import { Button } from 'antd';
 import 'antd/dist/antd.css';
 import { Link } from 'react-router-dom';
+import { format } from "date-fns";
 
 const Body = styled.div`
 padding-top: 1px;
@@ -182,21 +183,48 @@ const DataPost = styled.div`
   color: rgba(0, 0, 0, 0.5);
 `
 
-const Article = (props) => {
-  const { articles, item } = props;
+class Article extends React.Component {
+  componentDidMount() {
+    const { getArticles } = this.props;
+    getArticles();
+    if (!this.props.auth.isAuth) {
+      this.props.history.push("/login");
+    }
+  }
+
+  getUTCDate = (dateString = Date.now()) => {
+    const date = new Date(dateString);
+
+    return new Date(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds(),
+    );
+  };
+
+  getDate = (date) => {
+    return format(this.getUTCDate(date), 'MMMM dd, yyyy')
+  }
+
+
+  render() {
+  const { articles, item } = this.props;
+  console.log('ITEM!!!!', item)
   const articlesList = articles.articles;
   const arr = Object.values(articlesList);
   const currentArticle = arr.filter(({ _id }) => _id === item)[0];
 
   if (!currentArticle) {
-    return (
-      <Body>
-        Упс, что-то пошло не так
-      </Body>
-    )
+    console.log('TUT')
+    return null
   }
+
   const {title, description, tags, date, userName, text } = currentArticle;
   let listTags = Object.values({...tags});
+  const formattedDate = this.getDate(date)
   const renderTags = () => { return listTags.map(({ value, id }) => {
     return (
       <Tag key={id}>{value}</Tag>
@@ -229,7 +257,7 @@ const Article = (props) => {
               {userName}
             </Name>
             <DataPost>
-              {date}
+              {formattedDate}
             </DataPost>
           </Info>
           <Avatar img={avatar} />
@@ -238,7 +266,7 @@ const Article = (props) => {
           <Link to='/create'>
             <Button className='button_del'>Delete</Button>
           </Link>
-          <Link to='/create'>
+          <Link to={`/edit/${item}`}>
             <Button className='button_edit'>Edit</Button>
           </Link>
         </ButtonWrapper>
@@ -251,10 +279,12 @@ const Article = (props) => {
     </Body>
   )
 }
+}
 
 const mapStateToProps = state => ({
   articles: state.articles,
-  loadingArticle: state.loadingArticle
+  loadingArticle: state.loadingArticle,
+  auth: state.auth
 })
 
 export default connect(
