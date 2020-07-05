@@ -3,9 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { createBrowserHistory } from 'history';
+import { Router } from 'react-router-dom';
+const history = createBrowserHistory();
 
-ReactDOM.render(
-    <App />,
+ReactDOM.render((
+  <Router history={history}>
+    <App />
+  </Router>),
   document.getElementById('root')
 );
 

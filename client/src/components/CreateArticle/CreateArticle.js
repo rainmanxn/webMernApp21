@@ -139,7 +139,7 @@ const MytagsInput = ({ label, ...props }) => {
   const addtag = () => {
     const element = {};
     element.value = meta.value;
-    element.id = __.uniqueId();
+    element.id = Date.now();
     updatest([...tags, element]);
   }
   return (
@@ -208,7 +208,7 @@ class CreateArticle extends React.Component {
   // }
 
   render() {
-    const { articles, postArticle } = this.props;
+    const { postArticle } = this.props;
     const { tags } = this.state;
     const { user } = this.props.auth;
     // console.log('USER', user);

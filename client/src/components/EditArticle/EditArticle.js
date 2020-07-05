@@ -4,9 +4,10 @@ import { Form, Formik, useField } from 'formik';
 import { Button, Input } from 'antd';
 // import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getArticles, postArticle } from '../../actions/articleActions';
+import { getArticles, patchArticle } from '../../actions/articleActions';
 import PropTypes from 'prop-types';
 import __ from 'lodash';
+import { Link } from 'react-router-dom';
 
 const { TextArea } = Input;
 
@@ -109,9 +110,9 @@ const MyTagsList = ({ label, ...props }) => {
   const { id, name, value } = props;
   const [field] = useField(props);
   let { tags, updatest } = props;
+    // console.log(tags);
 
   const removetag = (id) => () => {
-    console.log(tags);
     tags = tags.filter((el) => el.id !== id);
     console.log(tags)
     updatest(tags)
@@ -135,17 +136,17 @@ const MyTagsList = ({ label, ...props }) => {
 };
 const MytagsInput = ({ label, ...props }) => {
   const [field, meta] = useField(props);
-  const { tags, updatest } = props;
+  const { tags, updatest, value } = props;
   const addtag = () => {
     const element = {};
     element.value = meta.value;
-    element.id = __.uniqueId();
+    element.id = Date.now();
     updatest([...tags, element]);
   }
   return (
     <Container style={{marginTop: 5}}>
       <Containertags>
-        <Input style={{width: 310}} placeholder='Tag' {...field} />
+        <Input style={{width: 310}} placeholder='Tag' {...field} value={value} />
         <Button
           style={{borderColor: '#F5222D', color: '#F5222D'}}
           id="remove-button"
@@ -169,7 +170,8 @@ const MytagsInput = ({ label, ...props }) => {
 
 class EditArticle extends React.Component {
   state = {
-    tags: []
+    tags: '',
+    currentArticle: ''
   }
 
 
@@ -206,40 +208,89 @@ class EditArticle extends React.Component {
   //   }
   // }
 
-  render() {
-    const { articles, postArticle, item } = this.props;
-    const { tags } = this.state;
-    const { user } = this.props.auth;
-    // console.log('articles', articles);
-    console.log('item item item', item);
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    let currentArticle = this.getCurrentArticle();
+    let tags = this.state.tags;
+    // console.log('currentArticle', this.state.currentArticle);
+    if (!currentArticle) {
+      return null;
+    }
+    if (this.state.currentArticle === '') {
+      // console.log('tut');
+      this.setState(() => {return {currentArticle}})
+    } else {
+      currentArticle = this.state.currentArticle;
+    }
+    if (this.state.tags === '') {
+      // console.log('tut');
+      this.setState(() => {return {tags: currentArticle.tags}})
+    }
+    if (tags !== this.state.tags) {
+      this.updateState(tags);
+    }
+  }
 
-    // console.log('articles', articles.articles[0])
+  getCurrentArticle = () => {
+    const { articles, item } = this.props;
+    let { articles: listArticles } = articles;
+    listArticles = Object.values(listArticles);
+    return listArticles.filter((el) => el._id === item)[0];
+  }
+
+  render() {
+    // console.log('currentArticle', this.state.currentArticle);
+    const { patchArticle } = this.props;
+    const { user } = this.props.auth;
+    const { currentArticle } = this.state;
+    const { _id: id } = currentArticle;
+    // if (!currentArticle) {
+    //   return null;
+    // }
+    let { title, description, text } = currentArticle;
+    let tags = this.state.tags;
+    if (tags === '') return null;
+    // const lengthTags = tags.length - 1;
+    // const lastTag = tags[lengthTags];
+    // if (!lastTag) return null;
+    // tags = tags.slice(0, lengthTags);
+    // console.log('tags', tags)
+    // console.log('lastTag', lastTag)
+    // const lastTag = tags[tags.length - 1];
+    // const lengthTags = tags.length - 1;
+    // console.log('lengthTags', lengthTags)
+    // tags.slice(0, lengthTags);
+    // if (!lastTag) return null;
+    // console.log('lastTag', tags)
     return (
       <BodyRegister>
         <Wrapper>
           <Text>Edit article</Text>
           <Formik
             initialValues={
-              this.props
+              currentArticle
             }
             onSubmit={(fields) => {
               // const { loginUser } = this.props;
+              const { currentArticle } = this.state;
+              const { _id: id } = currentArticle;
+              // console.log('ID!!!!!!!!!', id)
               const { title, description, text } = fields;
               const { tags } = this.state;
               const { name: userName } = user;
-              console.log('USER!!!    ', userName);
+              // console.log('USER!!!    ', userName);
               const articleFields = {
                 title,
                 description,
                 text,
                 tags,
-                userName
+                userName,
+                _id: id
               }
-              postArticle(articleFields);
+              patchArticle(articleFields, id);
               // loginUser(loggedUser);
               console.log('SUBMIT')
-              console.log(articleFields)
-              this.props.history.push("/")
+              // console.log(articleFields)
+              this.props.history.push(`/articles/${id}`)
             }}
             render={() => (
               <Form id="myForm">
@@ -249,6 +300,7 @@ class EditArticle extends React.Component {
                     name="title"
                     type="text"
                     id="title"
+                    // value={title}
                     className="inputForm"
                   />
                   <MyTextInput
@@ -256,6 +308,7 @@ class EditArticle extends React.Component {
                     name="description"
                     type="text"
                     id="description"
+                    // value={description}
                     className="inputForm"
                   />
                   <MyTextAreaInput
@@ -264,21 +317,23 @@ class EditArticle extends React.Component {
                     type="text"
                     id="text"
                     className="inputForm"
+                    // value={text}
                   />
                   <LabelTag>Tags</LabelTag>
-                  {tags.map(({ value, id }) => (
+                  {tags.map(({ value, id }) => {
+                    return (
                     <MyTagsList
                       value={value}
                       name={value}
                       type="text"
                       id={id}
                       className="inputForm"
-                      key={id}
+                      key={`${id}+${value}+${new Date()}`}
                       tags={tags}
                       updatest={this.updateState}
                       label=""
                     />
-                  ))}
+                  )})}
                   <MytagsInput
                     label="Tags"
                     id="tag"
@@ -288,9 +343,11 @@ class EditArticle extends React.Component {
                     tags={tags}
                     updatest={this.updateState}
                   />
+                  {/*<Link to={`/articles/${id}`}>*/}
                   <Button type="primary" className="loginButton" form="myForm" key="submit" htmlType="submit">
                     Send
                   </Button>
+                  {/*</Link>*/}
                 </FormContainer>
               </Form>
             )}
@@ -310,7 +367,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getArticles, postArticle }
+  { getArticles, patchArticle }
 )(EditArticle);
 
 MyTextInput.propTypes = {

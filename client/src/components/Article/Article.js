@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import unlike from '../Card/unliked.svg'
 import avatar from '../Card/avatar.png';
 import { connect } from 'react-redux';
-import { getArticles } from '../../actions/articleActions';
+import { getArticles, deleteArticle } from '../../actions/articleActions';
 import { Button } from 'antd';
 import 'antd/dist/antd.css';
 import { Link } from 'react-router-dom';
@@ -209,10 +209,17 @@ class Article extends React.Component {
     return format(this.getUTCDate(date), 'MMMM dd, yyyy')
   }
 
+  onDelete = (id) => () => {
+    const { deleteArticle, history } = this.props;
+    deleteArticle(id);
+    this.props.history.push('/');
+  }
+
 
   render() {
   const { articles, item } = this.props;
-  console.log('ITEM!!!!', item)
+  if (!articles) return null;
+  // console.log('ITEM!!!!', item)
   const articlesList = articles.articles;
   const arr = Object.values(articlesList);
   const currentArticle = arr.filter(({ _id }) => _id === item)[0];
@@ -222,12 +229,12 @@ class Article extends React.Component {
     return null
   }
 
-  const {title, description, tags, date, userName, text } = currentArticle;
+  const {title, description, tags, date, userName, text, _id } = currentArticle;
   let listTags = Object.values({...tags});
   const formattedDate = this.getDate(date)
   const renderTags = () => { return listTags.map(({ value, id }) => {
     return (
-      <Tag key={id}>{value}</Tag>
+      <Tag key={`${id} + ${value}`}>{value}</Tag>
     )
   })
   }
@@ -263,9 +270,7 @@ class Article extends React.Component {
           <Avatar img={avatar} />
         </InsideWrapper>
         <ButtonWrapper>
-          <Link to='/create'>
-            <Button className='button_del'>Delete</Button>
-          </Link>
+            <Button className='button_del' onClick={this.onDelete(_id)}>Delete</Button>
           <Link to={`/edit/${item}`}>
             <Button className='button_edit'>Edit</Button>
           </Link>
@@ -289,5 +294,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getArticles }
+  { getArticles, deleteArticle }
 )(Article);

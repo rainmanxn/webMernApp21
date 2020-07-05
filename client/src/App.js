@@ -13,12 +13,12 @@ import Login from './components/auth/Login';
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 import Header from './components/Header/Header';
-import Card from './components/Card/Card';
+// import Card from './components/Card/Card';
 import CreateArticle from './components/CreateArticle/CreateArticle';
 import Main from './components/Main/Main';
-import Article from './components/Article/Article';
+// import Article from './components/Article/Article';
 import ArticlePrivateRoute from './components/private-route/ArticlePrivateRoute';
-import EditArticle from './components/EditArticle/EditArticle';
+// import EditArticle from './components/EditArticle/EditArticle';
 import EditArticlePrivateRoute from './components/private-route/EditArticlePrivateRoute';
 
 

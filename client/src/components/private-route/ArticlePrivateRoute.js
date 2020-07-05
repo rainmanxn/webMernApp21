@@ -7,9 +7,9 @@ import Article from '../Article/Article';
 const ArticlePrivateRoute = ({ component: Component, auth, ...rest }) => (
   <Route
     {...rest}
-  render={({ match }) => { if (auth.isAuth) {
+  render={({ match, history }) => { if (auth.isAuth) {
     const {id} = match.params;
-      return <Article item={id}/>
+      return <Article history={history} item={id}/>
   } else {
     return <Redirect to='/login' />
   }

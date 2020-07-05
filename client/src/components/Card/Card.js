@@ -71,14 +71,14 @@ const RightHalf = styled.div`
   display: flex;
   justify-content: flex-end;
 `
-const BodyCard = styled.div`
-  background: #E5E5E5;
-  width: 100%;
-  height: 100vh;
-  position: relative;
-  display: flex;
-  justify-content: center;
-`
+// const BodyCard = styled.div`
+//   background: #E5E5E5;
+//   width: 100%;
+//   height: 100vh;
+//   position: relative;
+//   display: flex;
+//   justify-content: center;
+// `
 
 const Header = styled.div`
   display: flex;
@@ -167,13 +167,13 @@ class Card extends React.Component {
     const renderTags = () => {
       return listTags.map(({ value, id }) => {
         return (
-          <Tag key={id}>{value}</Tag>
+          <Tag key={`${id} + ${value}`}>{value}</Tag>
         )
       })
     }
 
     const linkCard = () => {
-      console.log(id)
+      // console.log(id)
       // history.push("/create")
       return (
         <Link to='/create' />

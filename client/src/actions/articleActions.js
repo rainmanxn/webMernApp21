@@ -8,6 +8,7 @@ export const getArticles = () => async (dispatch) => {
   dispatch(setArticles(response.data))
   dispatch(stopArticleLoading());
 }
+
 export const postArticle = (article) => async (dispatch) => {
   dispatch(setArticleLoading());
   const response = await axios.post('api/articles/create', article);
@@ -16,7 +17,22 @@ export const postArticle = (article) => async (dispatch) => {
   dispatch(stopArticleLoading());
 }
 
+export const patchArticle = (article, id) => async (dispatch) => {
+  dispatch(setArticleLoading());
+  console.log(article, id);
+  // const id = article._id;
+  const response = await axios.patch(`/api/articles/edit/${id}`, article);
+  console.log('RESPONSE', response.data);
+  // dispatch(postArticleAction(article));
+  dispatch(stopArticleLoading());
+}
 
+export const deleteArticle = (id) => async (dispatch) => {
+  console.log(id);
+  const _id = { id: 123};
+  const response = await axios.delete(`/api/articles/delete/${id}`);
+  console.log('RESPONSE', response.data);
+}
 
 export const setArticleLoading = () => {
   return {
