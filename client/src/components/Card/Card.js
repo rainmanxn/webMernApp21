@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import unlike from './unliked.svg';
 import avatar from './avatar.png';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { deleteArticle, getArticles, setLike } from '../../actions/articleActions';
+import './Card.scss'
 // import { createBrowserHistory } from 'history';
 // let history = createBrowserHistory();
 // import history from 'history/browser';
@@ -160,9 +163,11 @@ const DataPost = styled.div`
 
 class Card extends React.Component {
   // const {title, description, text, tags, date} = props;
+  onLike = () => {
+    console.log('Clock')
+  }
   render() {
-    const { title, description, tags, date, userName, id } = this.props;
-    // console.log('userName', userName)
+    const { title, description, tags, date, userName, id, likes } = this.props;
     let listTags = Object.values({ ...tags });
     const renderTags = () => {
       return listTags.map(({ value, id }) => {
@@ -182,20 +187,21 @@ class Card extends React.Component {
     // console.log(title, description, text, tags, date);
     return (
       // <BodyCard>
-      <Link to={`/articles/${id}`}>
       <Wrapper onClick={linkCard}>
         <LeftHalf>
           <Header>
             <Title>{title}</Title>
-            <Like img={unlike}/>
-            <CountLikes>13</CountLikes>
+            <Like onClick={this.onLike} img={unlike}/>
+            <CountLikes>{likes}</CountLikes>
           </Header>
           <TagBlock>
             {renderTags()}
           </TagBlock>
+          <Link to={`/articles/${id}`}>
           <TextArticle>
             {description}
           </TextArticle>
+          </Link>
         </LeftHalf>
         <RightHalf>
           <Info>
@@ -209,9 +215,18 @@ class Card extends React.Component {
           <Avatar img={avatar}/>
         </RightHalf>
       </Wrapper>
-      </Link>
+
     )
   }
 }
 
-export default Card;
+const mapStateToProps = state => ({
+  articles: state.articles,
+  loadingArticle: state.loadingArticle,
+  auth: state.auth
+})
+
+export default connect(
+  mapStateToProps,
+  { getArticles, deleteArticle, setLike }
+)(Card);

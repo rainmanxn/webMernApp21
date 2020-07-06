@@ -42,6 +42,7 @@ class Main extends React.Component {
 
   render() {
     const { articles: {articles} }  = this.props;
+    console.log('fdsfdsdf', articles)
     const arr = Object.values(articles);
     // console.log('arr!!!', arr[0]);
     // console.log(obj.date);
@@ -54,7 +55,7 @@ class Main extends React.Component {
     // рендерю карточки
     const renderCard = () => arr.map((el) => {
       const obj = Object.assign({}, el);
-      const { title, description, text, tags, date, userName, _id } = obj;
+      const { title, description, text, tags, date, userName, _id, likes } = obj;
       // console.log(title, description, text, tags, date);
       // console.log(_id);
       const dateNew = Date.now();
@@ -69,6 +70,7 @@ class Main extends React.Component {
             tags={tags}
             date={formattedDate}
             userName={userName}
+            likes={likes}
           />
       )
 

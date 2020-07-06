@@ -6,13 +6,14 @@ const router = express.Router();
 
 router.post('/create', async (req, res) => {
   try {
-    const { title, description, text, tags, userName } = req.body;
+    const { title, description, text, tags, userName, likes } = req.body;
     const article = new Article ({
       title,
       description,
       text,
       tags,
-      userName
+      userName,
+      likes
     });
     await article.save();
     res.status(201).json({ message: 'Статья создан' })
@@ -62,6 +63,11 @@ try {
   console.log(_id);
   console.log(resp);
   // res.status(201).json({ body })
+})
+
+router.patch('/edit/likes/:id', async (req, res) => {
+  const { likes } = req.body;
+  console.log(likes);
 })
 
 router.delete('/delete/:id', async (req, res) => {

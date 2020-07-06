@@ -24,6 +24,10 @@ const ArticleSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  likes: {
+    type: Number,
+    default: Date.now
   }
 });
 const Article = mongoose.model('articles', ArticleSchema);

@@ -10,6 +10,7 @@ const articleReducer = (state = initState, action) => {
     case GET_ARTICLES: {
       // console.log('action.payload', action.payload);
       const { articles } = action.payload;
+      // console.log('PAYLOAD', articles)
       return {
         ...state,
         articles

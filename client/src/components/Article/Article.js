@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import unlike from '../Card/unliked.svg'
 import avatar from '../Card/avatar.png';
 import { connect } from 'react-redux';
-import { getArticles, deleteArticle } from '../../actions/articleActions';
+import { getArticles, deleteArticle, setLike } from '../../actions/articleActions';
 import { Button } from 'antd';
 import 'antd/dist/antd.css';
 import { Link } from 'react-router-dom';
@@ -294,5 +294,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getArticles, deleteArticle }
+  { getArticles, deleteArticle, setLike }
 )(Article);

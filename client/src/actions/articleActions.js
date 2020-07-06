@@ -4,8 +4,8 @@ import { GET_ARTICLES, POST_ARTICLE, LOADING_ARTICLE, STOP_ARTICLE_LOADING } fro
 export const getArticles = () => async (dispatch) => {
   dispatch(setArticleLoading());
   const response = await axios.get('/api/articles/articles');
-  // console.log('RESPONSE', response.data)
   dispatch(setArticles(response.data))
+  // console.log('RESPONSE', response.data)
   dispatch(stopArticleLoading());
 }
 
@@ -25,6 +25,10 @@ export const patchArticle = (article, id) => async (dispatch) => {
   console.log('RESPONSE', response.data);
   // dispatch(postArticleAction(article));
   dispatch(stopArticleLoading());
+}
+
+export const setLike = (id) => async (dispatch) => {
+  console.log(id);
 }
 
 export const deleteArticle = (id) => async (dispatch) => {
