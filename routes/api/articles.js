@@ -16,7 +16,7 @@ router.post('/create', async (req, res) => {
       likes
     });
     await article.save();
-    res.status(201).json({ message: 'Статья создан' })
+    res.status(201).json(article)
   } catch (e) {
     res
       .status(500)
@@ -37,7 +37,7 @@ router.get('/articles', async (req, res) => {
 })
 
 router.patch('/edit/:id', async (req, res) => {
-  const { title, description, text, tags, userName, _id } = req.body;
+  const { title, description, text, tags, userName, _id, likedUsers } = req.body;
 try {
   const resp = await Article.findOneAndUpdate(
     { "_id": `${_id}` },
@@ -48,7 +48,8 @@ try {
         text,
         tags,
         userName,
-        _id
+        _id,
+        likedUsers
       }
     }
   )
@@ -60,14 +61,36 @@ try {
     .status(500)
     .json({ message: 'Что-то пошло не так, попробуйте снова' });
 }
-  console.log(_id);
-  console.log(resp);
+
   // res.status(201).json({ body })
 })
 
 router.patch('/edit/likes/:id', async (req, res) => {
-  const { likes } = req.body;
-  console.log(likes);
+  try {
+  let { id, like, userId } = req.body;
+  let likes = like + 1;
+
+  const currentArticle = await Article.findOne({ _id: id });
+  console.log(currentArticle.likedUsers);
+
+  const resp = await Article.findOneAndUpdate(
+    { "_id": `${id}` },
+    {
+      $set: {
+        likes,
+        likedUsers: [...userId]
+      }
+    }
+  )
+  console.log(resp);
+  res
+    .status(200)
+    .json({ message: 'Success' });
+} catch (e) {
+    res
+      .status(500)
+      .json({ message: 'Что-то пошло не так, попробуйте снова' });
+  }
 })
 
 router.delete('/delete/:id', async (req, res) => {

@@ -28,6 +28,10 @@ const ArticleSchema = new Schema({
   likes: {
     type: Number,
     default: Date.now
+  },
+  likedUsers: {
+    type: Array,
+    default: []
   }
 });
 const Article = mongoose.model('articles', ArticleSchema);

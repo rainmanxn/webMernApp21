@@ -163,11 +163,21 @@ const DataPost = styled.div`
 
 class Card extends React.Component {
   // const {title, description, text, tags, date} = props;
-  onLike = () => {
-    console.log('Clock')
+  onLike = (id, likes, userId) => () => {
+    // const { xz } = this.state;
+    // console.log('xz',id, likes, 'userId', userId)
+    // this.setState({xz: xz + 1})
+    const { setLike } = this.props;
+    setLike(id, likes, userId);
+    // this.props.history.push('/');
   }
+
+
   render() {
-    const { title, description, tags, date, userName, id, likes } = this.props;
+    const { title, description, tags, date, userName, id, likes, auth, likedUsers } = this.props;
+    console.log('likedUsers', likedUsers)
+    const { id: userId } = auth.user
+    // console.log('AUTH', userId)
     let listTags = Object.values({ ...tags });
     const renderTags = () => {
       return listTags.map(({ value, id }) => {
@@ -191,7 +201,7 @@ class Card extends React.Component {
         <LeftHalf>
           <Header>
             <Title>{title}</Title>
-            <Like onClick={this.onLike} img={unlike}/>
+            <Like onClick={this.onLike(id, likes, userId)} img={unlike}/>
             <CountLikes>{likes}</CountLikes>
           </Header>
           <TagBlock>
@@ -222,7 +232,6 @@ class Card extends React.Component {
 
 const mapStateToProps = state => ({
   articles: state.articles,
-  loadingArticle: state.loadingArticle,
   auth: state.auth
 })
 

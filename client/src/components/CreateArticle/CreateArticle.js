@@ -233,7 +233,8 @@ class CreateArticle extends React.Component {
                 text,
                 tags,
                 userName,
-                likes: 0
+                likes: 0,
+                likedUsers: []
               }
               postArticle(articleFields);
               // loginUser(loggedUser);

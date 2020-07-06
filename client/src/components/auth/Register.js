@@ -170,7 +170,7 @@ class Register extends React.Component {
 
   componentDidMount() {
     if (this.props.auth.isAuth) {
-      this.props.history.push("/dashboard");
+      this.props.history.push("/");
     }
   }
 

@@ -272,7 +272,7 @@ class EditArticle extends React.Component {
             onSubmit={(fields) => {
               // const { loginUser } = this.props;
               const { currentArticle } = this.state;
-              const { _id: id } = currentArticle;
+              const { _id: id, likedUsers } = currentArticle;
               // console.log('ID!!!!!!!!!', id)
               const { title, description, text } = fields;
               const { tags } = this.state;
@@ -284,7 +284,8 @@ class EditArticle extends React.Component {
                 text,
                 tags,
                 userName,
-                _id: id
+                _id: id,
+                likedUsers
               }
               patchArticle(articleFields, id);
               // loginUser(loggedUser);

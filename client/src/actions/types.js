@@ -8,3 +8,6 @@ export const GET_ARTICLES = 'GET_ARTICLES';
 export const POST_ARTICLE = 'POST_ARTICLE';
 export const LOADING_ARTICLE = 'LOADING_ARTICLE';
 export const STOP_ARTICLE_LOADING = 'STOP_ARTICLE_LOADING';
+
+export const INC_LIKE = 'INC_LIKE';
+export const DEC_LIKE = 'DEC_LIKE';

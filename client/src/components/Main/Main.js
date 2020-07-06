@@ -42,22 +42,13 @@ class Main extends React.Component {
 
   render() {
     const { articles: {articles} }  = this.props;
-    console.log('fdsfdsdf', articles)
+    const { likes: likesArr } = this.props.articles;
     const arr = Object.values(articles);
-    // console.log('arr!!!', arr[0]);
-    // console.log(obj.date);
-    // const card = arr[0];
-    // console.log(this.getDate(obj.date))
-    // const { title, description, text, tags, date } = card;
-    // const newDate = format(this.getUTCDate(date), 'MMMM dd, yyyy') // returns UTC time
 
-    // const render = () => arr.map((el) => console.log(el));
-    // рендерю карточки
     const renderCard = () => arr.map((el) => {
       const obj = Object.assign({}, el);
-      const { title, description, text, tags, date, userName, _id, likes } = obj;
-      // console.log(title, description, text, tags, date);
-      // console.log(_id);
+      const { title, description, text, tags, date, userName, _id, likedUsers } = obj;
+      const currentLike = likesArr.filter(({ id, likes }) => id === _id)[0].likes;
       const dateNew = Date.now();
       const formattedDate = this.getDate(date)
       return (
@@ -70,32 +61,22 @@ class Main extends React.Component {
             tags={tags}
             date={formattedDate}
             userName={userName}
-            likes={likes}
+            likes={currentLike}
+            history={this.props.history}
+            likedUsers={likedUsers}
           />
       )
 
     });
-    // renderCard();
     return (
       <Body>
         {renderCard()}
       </Body>)
-      // <Body>
-      //   <Card
-      //     // title={title}
-      //     // description={description}
-      //     // text={text}
-      //     // tags={tags}
-      //     // date={newDate}
-      //   />
-      // </Body>
-      // )
   }
 }
 
 const mapStateToProps = state => ({
   articles: state.articles,
-  loadingArticle: state.loadingArticle
 })
 
 export default connect(

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_ARTICLES, POST_ARTICLE, LOADING_ARTICLE, STOP_ARTICLE_LOADING } from './types';
+import { GET_ARTICLES, POST_ARTICLE, LOADING_ARTICLE, STOP_ARTICLE_LOADING, INC_LIKE, DEC_LIKE } from './types';
 
 export const getArticles = () => async (dispatch) => {
   dispatch(setArticleLoading());
@@ -12,8 +12,8 @@ export const getArticles = () => async (dispatch) => {
 export const postArticle = (article) => async (dispatch) => {
   dispatch(setArticleLoading());
   const response = await axios.post('api/articles/create', article);
-  console.log('RESPONSE', response.data);
-  dispatch(postArticleAction(article));
+  // console.log('RESPONSE', response);
+  dispatch(postArticleAction(response.data));
   dispatch(stopArticleLoading());
 }
 
@@ -27,8 +27,14 @@ export const patchArticle = (article, id) => async (dispatch) => {
   dispatch(stopArticleLoading());
 }
 
-export const setLike = (id) => async (dispatch) => {
-  console.log(id);
+export const setLike = (id, likes, userId) => async (dispatch) => {
+  const like = likes;
+  console.log('xz',id, likes, 'userId', userId)
+  const response = await axios.patch(`/api/articles/edit/likes/${id}`, {id, like, userId });
+  dispatch(incLike({id, like}));
+  // console.log('click', id, like)
+  // console.log('id, likes')
+  // console.log(response);
 }
 
 export const deleteArticle = (id) => async (dispatch) => {
@@ -61,6 +67,13 @@ export const setArticles = (payload) => {
 export const postArticleAction = (payload) => {
   return {
     type: POST_ARTICLE,
+    payload
+  }
+}
+
+export const incLike = (payload) => {
+  return {
+    type: INC_LIKE,
     payload
   }
 }

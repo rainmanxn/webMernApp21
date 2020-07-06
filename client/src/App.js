@@ -41,7 +41,7 @@ function App() {
       <Router>
         <div className="App">
             <Route path='/' component={Header}/>
-            <Route exact path='/' component={Main} />
+            <Route exact path='/' render={({ history }) => { return <Main history={history} />}} />
             {/*<Route path='/articles/:id' render={({ match }) => {*/}
             {/*  const { id } = match.params;*/}
             {/*  console.log('MATCH', id)*/}
