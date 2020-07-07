@@ -96,10 +96,12 @@ const Text = styled.div`
    const renderUser = (logged) => {
      if (logged) {
        return (
+           <Link to='/editaccount'>
          <UserInfo>
-           <UserName>{user.name}</UserName>
-           <Avatar img={avatar} />
+              <UserName>{user.name}</UserName>
+              <Avatar img={avatar} />
          </UserInfo>
+           </Link>
        )
      }
      return null

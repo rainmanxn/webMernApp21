@@ -20,7 +20,11 @@ padding-top: 50px;
 class Main extends React.Component {
   componentDidMount() {
     const { getArticles } = this.props;
-    getArticles();
+    try {
+      getArticles();
+    } catch (e) {
+      getArticles();
+    }
   }
 
   getUTCDate(dateString = Date.now()) {

@@ -20,6 +20,7 @@ import Main from './components/Main/Main';
 import ArticlePrivateRoute from './components/private-route/ArticlePrivateRoute';
 // import EditArticle from './components/EditArticle/EditArticle';
 import EditArticlePrivateRoute from './components/private-route/EditArticlePrivateRoute';
+import editAccount from './components/auth/editAccount';
 
 
 // check logged
@@ -49,6 +50,7 @@ function App() {
             {/*}} />*/}
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
+            <Route exact path='/editaccount' component={editAccount} />
 
             <Switch>
               <PrivateRoute path='/create' component={CreateArticle} />

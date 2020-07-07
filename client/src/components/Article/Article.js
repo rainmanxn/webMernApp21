@@ -4,7 +4,7 @@ import unlike from '../Card/unliked.svg'
 import avatar from '../Card/avatar.png';
 import { connect } from 'react-redux';
 import { getArticles, deleteArticle, setLike } from '../../actions/articleActions';
-import { Button } from 'antd';
+import { Button, Popconfirm } from 'antd';
 import 'antd/dist/antd.css';
 import { Link } from 'react-router-dom';
 import { format } from "date-fns";
@@ -221,6 +221,10 @@ class Article extends React.Component {
     setLike(id, likes, userId);
   }
 
+ confirm = () => {
+    console.log('Clicked on Yes.');
+  }
+
 
   render() {
   const { articles, item, auth } = this.props;
@@ -256,6 +260,8 @@ class Article extends React.Component {
       const currentArticleLikes = likedUsers.filter(({ id: articleID }) => articleID === _id)[0].likedUsers;
       isLiked = (currentArticleLikes.indexOf(userId) === -1);
     }
+    const textPop = 'Are you sure to delete this article?';
+
   return (
     <Body>
     <Wrapper>
@@ -289,7 +295,9 @@ class Article extends React.Component {
           <Avatar img={avatar} />
         </InsideWrapper>
         <ButtonWrapper>
-            <Button className='button_del' onClick={this.onDelete(_id)}>Delete</Button>
+          <Popconfirm placement="rightTop" title={textPop} onConfirm={this.onDelete(_id)} okText="Yes" cancelText="No">
+            <Button className='button_del'>Delete</Button>
+          </Popconfirm>
           <Link to={`/edit/${item}`}>
             <Button className='button_edit'>Edit</Button>
           </Link>
