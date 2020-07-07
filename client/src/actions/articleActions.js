@@ -29,10 +29,10 @@ export const patchArticle = (article, id) => async (dispatch) => {
 
 export const setLike = (id, likes, userId) => async (dispatch) => {
   const like = likes;
-  console.log('xz',id, likes, 'userId', userId)
+  // console.log('xz',id, likes, 'userId', userId)
   const response = await axios.patch(`/api/articles/edit/likes/${id}`, {id, like, userId });
-  dispatch(incLike({id, like}));
-  // console.log('click', id, like)
+  dispatch(incLike({id, like, userId}));
+  // console.log('click!!!!!!!!!!!!!!!!!', id, like, userId)
   // console.log('id, likes')
   // console.log(response);
 }

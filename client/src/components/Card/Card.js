@@ -164,18 +164,14 @@ const DataPost = styled.div`
 class Card extends React.Component {
   // const {title, description, text, tags, date} = props;
   onLike = (id, likes, userId) => () => {
-    // const { xz } = this.state;
-    // console.log('xz',id, likes, 'userId', userId)
-    // this.setState({xz: xz + 1})
     const { setLike } = this.props;
     setLike(id, likes, userId);
-    // this.props.history.push('/');
   }
 
 
   render() {
     const { title, description, tags, date, userName, id, likes, auth, likedUsers } = this.props;
-    console.log('likedUsers', likedUsers)
+    // console.log('likedUsers', likedUsers)
     const { id: userId } = auth.user
     // console.log('AUTH', userId)
     let listTags = Object.values({ ...tags });
