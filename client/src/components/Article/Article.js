@@ -8,6 +8,7 @@ import { Button } from 'antd';
 import 'antd/dist/antd.css';
 import { Link } from 'react-router-dom';
 import { format } from "date-fns";
+import liked from '../Card/liked.svg';
 
 const Body = styled.div`
 padding-top: 1px;
@@ -215,12 +216,17 @@ class Article extends React.Component {
     this.props.history.push('/');
   }
 
+  onLike = (id, likes, userId) => () => {
+    const { setLike } = this.props;
+    setLike(id, likes, userId);
+  }
+
 
   render() {
-  const { articles, item } = this.props;
-  if (!articles) return null;
-  // console.log('ITEM!!!!', item)
+  const { articles, item, auth } = this.props;
+  // if (!articles) return null;
   const articlesList = articles.articles;
+  console.log('articles!!!!', articles)
   const arr = Object.values(articlesList);
   const currentArticle = arr.filter(({ _id }) => _id === item)[0];
 
@@ -230,6 +236,8 @@ class Article extends React.Component {
   }
 
   const {title, description, tags, date, userName, text, _id } = currentArticle;
+  const { likes: likesArr } = this.props.articles;
+  const likes = likesArr.filter(({ id, likes }) => id === _id)[0].likes;
   let listTags = Object.values({...tags});
   const formattedDate = this.getDate(date)
   const renderTags = () => { return listTags.map(({ value, id }) => {
@@ -239,7 +247,15 @@ class Article extends React.Component {
   })
   }
 
-  // console.log(title, description, text, tags, date);
+    const { likedUsers } = articles;
+    const { id: userId } = auth.user;
+    let isLiked;
+    if (likedUsers.length === 0) {
+      isLiked = false;
+    } else {
+      const currentArticleLikes = likedUsers.filter(({ id: articleID }) => articleID === _id)[0].likedUsers;
+      isLiked = (currentArticleLikes.indexOf(userId) === -1);
+    }
   return (
     <Body>
     <Wrapper>
@@ -247,8 +263,11 @@ class Article extends React.Component {
       <LeftHalf>
         <Header>
           <Title>{title}</Title>
-          <Like img={unlike} />
-          <CountLikes>13</CountLikes>
+          {isLiked ?
+            (<Like onClick={this.onLike(_id, likes, userId)} img={unlike}/>)
+            :
+            (<Like onClick={this.onLike(_id, likes, userId)} img={liked}/>)}
+          <CountLikes>{likes}</CountLikes>
         </Header>
         <TagBlock>
           {renderTags()}

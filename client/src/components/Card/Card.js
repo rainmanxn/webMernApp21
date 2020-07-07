@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import unlike from './unliked.svg';
+import liked from './liked.svg';
 import avatar from './avatar.png';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -170,10 +171,17 @@ class Card extends React.Component {
 
 
   render() {
-    const { title, description, tags, date, userName, id, likes, auth, likedUsers } = this.props;
-    // console.log('likedUsers', likedUsers)
-    const { id: userId } = auth.user
-    // console.log('AUTH', userId)
+    const { title, description, tags, date, userName, id, likes, auth, articles } = this.props;
+    const { likedUsers } = articles;
+    const { id: userId } = auth.user;
+    let isLiked;
+    if (likedUsers.length === 0) {
+      isLiked = false;
+    } else {
+      const currentArticleLikes = likedUsers.filter(({ id: articleID }) => articleID === id)[0].likedUsers;
+      isLiked = (currentArticleLikes.indexOf(userId) === -1);
+      console.log('isliked', isLiked);
+    }
     let listTags = Object.values({ ...tags });
     const renderTags = () => {
       return listTags.map(({ value, id }) => {
@@ -197,7 +205,10 @@ class Card extends React.Component {
         <LeftHalf>
           <Header>
             <Title>{title}</Title>
-            <Like onClick={this.onLike(id, likes, userId)} img={unlike}/>
+            {isLiked ?
+              (<Like onClick={this.onLike(id, likes, userId)} img={unlike}/>)
+              :
+              (<Like onClick={this.onLike(id, likes, userId)} img={liked}/>)}
             <CountLikes>{likes}</CountLikes>
           </Header>
           <TagBlock>

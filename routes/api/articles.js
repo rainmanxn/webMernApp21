@@ -68,18 +68,26 @@ try {
 router.patch('/edit/likes/:id', async (req, res) => {
   try {
   let { id, like, userId } = req.body;
-  let likes = like + 1;
-
+  let likes = like;
   const currentArticle = await Article.findOne({ _id: id });
   // console.log(currentArticle.likedUsers);
   // const res = currentArticle.likedUsers.indexOf(userId) === -1 ? currentArticle.likedUsers : [...currentArticle.likedUsers, userId];
   //   let res;
   // console.log(currentArticle.likedUsers.indexOf(userId));const likedUsers = [...currentArticle.likedUsers]
-    let likedUsers = [...currentArticle.likedUsers]
-  if (currentArticle.likedUsers.indexOf(userId) === -1) {
-    likedUsers = [...likedUsers, userId]
+    let arr =[];
+  let likedUsers = currentArticle.likedUsers;
+  console.log(userId);
+  // if (likedUsers.indexOf(userId) === -1) {
+  //
+  // }
+  if (likedUsers.indexOf(userId) === -1) {
+    likedUsers = [...likedUsers, userId];
+    likes += 1;
+  } else {
+    likedUsers = likedUsers.filter((el) => el !== userId);
+    likes -= 1;
   }
-  console.log(likedUsers);
+    console.log(likedUsers);
   const resp = await Article.findOneAndUpdate(
     { "_id": `${id}` },
     {

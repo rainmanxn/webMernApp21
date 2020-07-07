@@ -12,21 +12,28 @@ const articleReducer = (state = initState, action) => {
     case INC_LIKE: {
       const { id: _id, like, userId } = action.payload;
       let { likes, likedUsers } = state;
+      let isLiked = false;
+      let res = [];
+      likedUsers = likedUsers.map(({ id, likedUsers }) => {
+        if (id === _id) {
+          if (likedUsers.indexOf(userId) !== -1) {
+            isLiked= true;
+            res = likedUsers.filter((el) => el !== userId)
+          } else {
+            res = [...likedUsers, userId];
+          }
+          return { id, likedUsers: res }
+        }
+        return { id, likedUsers }
+      })
       likes = likes.map(({ id, likes}) => {
         if ( id === _id) {
-          return { id, likes: like + 1 }
+          return isLiked ? { id, likes: like - 1 } : { id, likes: like + 1 }
         }
         return { id, likes }
       })
-      likedUsers = likedUsers.map(({ id, likedUsers }) => {
-          if (id === _id) {
-            let res = (likedUsers.indexOf(userId) === -1) ? [...likedUsers, userId] : [...likedUsers];
-            console.log('res', likedUsers);
-            return { id, likedUsers: res }
-          }
-          return { id, likedUsers }
-      })
-      console.log('likedUsers', likedUsers);
+      console.log('likes', likes);
+      // console.log('isLiked', isLiked);
 
       return {
         ...state,
@@ -60,7 +67,8 @@ const articleReducer = (state = initState, action) => {
       return {
         ...state,
         articles: {...articles, article},
-        likes: [...likes, like]
+        likes: [...likes, like],
+        likedUsers: []
       }}
     case LOADING_ARTICLE:
       return {
