@@ -131,4 +131,25 @@ router.post('/login', (req, res) => {
   });
 });
 
+router.patch('/edit/:id', async (req, res) => {
+  console.log(req.body);
+  const { id, name, email, password, url } = req.body;
+  const currentUsr = await User.findOne({ _id: id });
+  const resp = await User.findOneAndUpdate(
+    { _id: id },
+    {
+      $set: {
+        name,
+        // password,
+        email,
+        url
+      }
+    }
+  )
+  console.log('RESP', resp);
+  return res
+    .status(200)
+    .json(resp);
+})
+
 module.exports = router;

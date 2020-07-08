@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import './Register.scss'
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { registerUser, setErrors } from "../../actions/authActions";
+import { registerUser, setErrors, editUser } from "../../actions/authActions";
 
 const BottomText = styled.div`
   width: 319px;
@@ -166,7 +166,7 @@ const MyCheckbox = ({ label, ...props }) => {
   );
 };
 
-class Register extends React.Component {
+class EditAccount extends React.Component {
 
   componentDidMount() {
     if (!this.props.auth.isAuth) {
@@ -196,19 +196,21 @@ class Register extends React.Component {
               this.props.errors
             }
             onSubmit={(fields) => {
-              const { registerUser, history } = this.props;
+              const { registerUser, history, auth, editUser } = this.props;
+              const { id, email: currentEmail } = auth.user;
               // console.log('fields!!!', fields);
-              const { name, email, password, password2, acceptTerms } = fields;
+              const { name, email, password, url } = fields;
               const newUser = {
-                name, email, password, password2, acceptTerms
+                name, email, password, url, id
               };
-              registerUser(newUser, history)
-              // console.log(newUser)
+              editUser(newUser);
+              console.log(auth.user)
+              // console.log(auth)
             }}
             render={() => (
               <Form id="myForm">
                 <FormContainer>
-                  <Text>Create new account</Text>
+                  <Text>Edit profile</Text>
                   <MyTextInput
                     label="Username"
                     name="name"
@@ -232,7 +234,7 @@ class Register extends React.Component {
                     {errors ? errors.email : null}
                   </Error>
                   <MyPasswordInput
-                    label="Password"
+                    label="New password"
                     id="password"
                     name="password"
                     className="inputForm"
@@ -243,7 +245,7 @@ class Register extends React.Component {
                   </Error>
                   <MyTextInput
                     label="Avatar image (url)"
-                    name="avatar"
+                    name="url"
                     type="text"
                     id="avatar"
                     className="inputForm"
@@ -272,8 +274,8 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { registerUser, setErrors }
-)(withRouter(Register));
+  { registerUser, setErrors, editUser }
+)(withRouter(EditAccount));
 
 MyTextInput.propTypes = {
   id: PropTypes.string.isRequired,

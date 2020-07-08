@@ -2,7 +2,7 @@ import axios from 'axios';
 import setAuthToken from '../utils/setAuthToken';
 import jwtDecode from 'jwt-decode';
 
-import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING, STOP_USER_LOADING } from './types';
+import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING, STOP_USER_LOADING, EDIT_CURRENT_USER } from './types';
 
 export const registerUser = (userData, history) => dispatch => {
   dispatch(setUserLoading());
@@ -17,6 +17,12 @@ export const registerUser = (userData, history) => dispatch => {
       }))
     , 500)
 
+}
+
+export const editUser = (userData) => async (dispatch) => {
+  const { name, email, password, url, id } = userData;
+  const response = await axios.patch(`api/users/edit/${id}`, userData);
+  console.log(response)
 }
 
 export const loginUser = userData => dispatch => {
@@ -74,5 +80,12 @@ export const setUserLoading = () => {
 export const stopUserLoading = () => {
   return {
     type: STOP_USER_LOADING
+  }
+}
+
+export const editCurrentUser = (payload) => {
+  return {
+    type: EDIT_CURRENT_USER,
+    payload
   }
 }

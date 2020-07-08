@@ -18,6 +18,10 @@ const UserSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  url: {
+    type: String,
+    required: false
   }
 });
 const User = mongoose.model('users', UserSchema);
