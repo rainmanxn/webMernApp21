@@ -106,7 +106,8 @@ router.post('/login', (req, res) => {
         // Create JWT Payload
         const payload = {
           id: user.id,
-          name: user.name
+          name: user.name,
+          url: user.url
         };
         // Sign token
         jwt.sign(
@@ -132,24 +133,62 @@ router.post('/login', (req, res) => {
 });
 
 router.patch('/edit/:id', async (req, res) => {
-  console.log(req.body);
-  const { id, name, email, password, url } = req.body;
+  // console.log(req.body);
+  let { id, name, email, password, url } = req.body;
+  if (password) {
+    password = await bcrypt.hash(password, 10);
+  }
   const currentUsr = await User.findOne({ _id: id });
+  console.log('req.body', currentUsr.name);
+  if (!name) {
+    name = currentUsr.name;
+  }
+  if (!email) {
+    email = currentUsr.email;
+  }
+  if (!password) {
+    password = currentUsr.password;
+  }
+  if (!url) {
+    url = currentUsr.url;
+  }
+      // User matched
+      // Create JWT Payload
+      const payload = {
+        id,
+        name,
+        url,
+      };
+      // Sign token
+      jwt.sign(
+        payload,
+        keys.secretOrKey,
+        {
+          expiresIn: 31556926 // 1 year in seconds
+        },
+        (err, token) => {
+          res.json({
+            success: true,
+            token: `Bearer ${token}`
+          });
+        }
+      );
+
   const resp = await User.findOneAndUpdate(
     { _id: id },
     {
       $set: {
         name,
-        // password,
         email,
-        url
+        url,
+        password,
       }
     }
   )
-  console.log('RESP', resp);
-  return res
-    .status(200)
-    .json(resp);
+  // console.log('RESP', resp);
+  // return res
+  //   .status(200)
+  //   .json(resp);
 })
 
 module.exports = router;

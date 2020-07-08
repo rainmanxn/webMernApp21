@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER, USER_LOADING, STOP_USER_LOADING } from '../actions/types';
+import { SET_CURRENT_USER, USER_LOADING, STOP_USER_LOADING, EDIT_CURRENT_USER } from '../actions/types';
 const isEmpty = require('is-empty');
 
 const inititalState = {
@@ -9,8 +9,16 @@ const inititalState = {
 
 const authReducer = (state = inititalState, action) => {
   switch (action.type) {
+    case EDIT_CURRENT_USER:
+      const { name, email, password, url } = action.payload;
+      let { user } = state;
+      user = { ...user, name, email, password, url }
+      console.log('user', user);
+      return {
+        ...state,
+        user: user
+      }
     case SET_CURRENT_USER:
-      console.log(action.payload);
       return {
         ...state,
         isAuth: !isEmpty(action.payload),

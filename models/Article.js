@@ -32,6 +32,10 @@ const ArticleSchema = new Schema({
   likedUsers: {
     type: Array,
     default: []
+  },
+  url: {
+    type: String,
+    default: ''
   }
 });
 const Article = mongoose.model('articles', ArticleSchema);

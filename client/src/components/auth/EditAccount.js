@@ -11,21 +11,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { registerUser, setErrors, editUser } from "../../actions/authActions";
 
-const BottomText = styled.div`
-  width: 319px;
-  height: 20px;
-  margin-left: 32px;
-  margin-top: 8px;
-  margin-bottom: 48px;
-  font-family: Roboto,serif;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 20px;
-  text-align: center;
-  color: #8C8C8C;
-`
-
 const Line = styled.div`
   width: 320px;
   height: 0;
@@ -219,9 +204,6 @@ class EditAccount extends React.Component {
                     className="inputForm"
                     errors={errors}
                   />
-                  <Error className="red-text">
-                    {errors ? errors.name : null}
-                  </Error>
                   <MyTextInput
                     label="Email address"
                     name="email"
@@ -230,9 +212,6 @@ class EditAccount extends React.Component {
                     className="inputForm"
                     errors={errors}
                   />
-                  <Error className="red-text">
-                    {errors ? errors.email : null}
-                  </Error>
                   <MyPasswordInput
                     label="New password"
                     id="password"
@@ -240,9 +219,6 @@ class EditAccount extends React.Component {
                     className="inputForm"
                     type="text"
                   />
-                  <Error className="red-text">
-                    {errors ? errors.password : null}
-                  </Error>
                   <MyTextInput
                     label="Avatar image (url)"
                     name="url"
@@ -251,11 +227,8 @@ class EditAccount extends React.Component {
                     className="inputForm"
                     errors={errors}
                   />
-                  <Error className="red-text">
-                    {errors ? errors.password2 : null}
-                  </Error>
                   <Button type="primary" className="editSubmitButton" form="myForm" key="submit" htmlType="submit" loading={this.props.auth.loading}>
-                    Register
+                    Save
                   </Button>
                 </FormContainer>
               </Form>

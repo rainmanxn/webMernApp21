@@ -12,6 +12,7 @@ import avatar from '../Card/avatar.png';
 const Avatar = styled.img.attrs((props) => ({ src: props.img }))`
   height: 46px;
   width: 46px;
+  border-radius: 23px;
   margin-right: 27px;
   margin-left: 13px;
   &:hover {
@@ -54,6 +55,11 @@ const Text = styled.div`
 
  const Header = (props) => {
   const { user } = props.auth;
+  let { url } = user;
+  // console.log('!!!!!!!!!', user)
+  if (!url) {
+    url = avatar;
+  }
   const isLogged = !(Object.keys(user).length === 0);
   const onLogoutClick = e => {
      e.preventDefault();
@@ -99,7 +105,8 @@ const Text = styled.div`
            <Link to='/editaccount'>
          <UserInfo>
               <UserName>{user.name}</UserName>
-              <Avatar img={avatar} />
+              {/*<Avatar img='http://www.1zoom.net/prev2/290/289597.jpg' />*/}
+              <Avatar img={url} />
          </UserInfo>
            </Link>
        )
@@ -117,7 +124,6 @@ const Text = styled.div`
      }
      return null
    }
-
 
     return (
     <Wrapper>

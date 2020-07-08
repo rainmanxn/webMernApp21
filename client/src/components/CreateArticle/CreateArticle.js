@@ -222,7 +222,8 @@ class CreateArticle extends React.Component {
               this.props
             }
             onSubmit={(fields) => {
-              // const { loginUser } = this.props;
+              const { url } = this.props.auth.user;
+              console.log(url)
               const { title, description, text } = fields;
               const { tags } = this.state;
               const { name: userName } = user;
@@ -234,7 +235,8 @@ class CreateArticle extends React.Component {
                 tags,
                 userName,
                 likes: 0,
-                likedUsers: []
+                likedUsers: [],
+                url
               }
               postArticle(articleFields);
               // loginUser(loggedUser);
@@ -274,7 +276,7 @@ class CreateArticle extends React.Component {
                       type="text"
                       id={id}
                       className="inputForm"
-                      key={id}
+                      key={`${id} + ${value} + ${Date.now()}`}
                       tags={tags}
                       updatest={this.updateState}
                       label=""

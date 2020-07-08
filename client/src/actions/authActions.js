@@ -20,9 +20,23 @@ export const registerUser = (userData, history) => dispatch => {
 }
 
 export const editUser = (userData) => async (dispatch) => {
+  try {
   const { name, email, password, url, id } = userData;
   const response = await axios.patch(`api/users/edit/${id}`, userData);
-  console.log(response)
+    const { token } = response.data;
+    localStorage.setItem("jwtToken", token);
+    setAuthToken(token);
+    const decoded = jwtDecode(token);
+    console.log('DECODED: ', decoded);
+    // dispatch(setCurrentUser(decoded));
+  dispatch(editCurrentUser(decoded))
+  // console.log(response)
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    })
+  }
 }
 
 export const loginUser = userData => dispatch => {

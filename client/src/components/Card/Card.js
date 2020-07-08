@@ -25,6 +25,7 @@ const Like = styled.img.attrs((props) => ({ src: props.img }))`
 const Avatar = styled.img.attrs((props) => ({ src: props.img }))`
   height: 46px;
   width: 46px;
+  border-radius: 24px;
   margin-left: 13px;
   &:hover {
     cursor: pointer;
@@ -165,13 +166,17 @@ const DataPost = styled.div`
 class Card extends React.Component {
   // const {title, description, text, tags, date} = props;
   onLike = (id, likes, userId) => () => {
-    const { setLike } = this.props;
-    setLike(id, likes, userId);
+    const { auth } = this.props;
+    const { isAuth } = auth;
+    if (isAuth) {
+      const { setLike } = this.props;
+      setLike(id, likes, userId);
+    }
   }
 
 
   render() {
-    const { title, description, tags, date, userName, id, likes, auth, articles } = this.props;
+    const { title, description, tags, date, userName, id, likes, auth, articles, url } = this.props;
     const { likedUsers } = articles;
     const { id: userId } = auth.user;
     let isLiked;
@@ -181,7 +186,7 @@ class Card extends React.Component {
     } else {
       const currentArticleLikes = likedUsers.filter(({ id: articleID }) => articleID === id)[0].likedUsers;
       isLiked = (currentArticleLikes.indexOf(userId) === -1);
-      console.log('isliked', isLiked);
+      // console.log('isliked', isLiked);
     }
     let listTags = Object.values({ ...tags });
     const renderTags = () => {
@@ -199,6 +204,8 @@ class Card extends React.Component {
         <Link to='/create' />
       )
     }
+
+    const picture = url ? url : avatar;
     // console.log(title, description, text, tags, date);
     return (
       // <BodyCard>
@@ -230,7 +237,7 @@ class Card extends React.Component {
               {date}
             </DataPost>
           </Info>
-          <Avatar img={avatar}/>
+          <Avatar img={picture}/>
         </RightHalf>
       </Wrapper>
 
