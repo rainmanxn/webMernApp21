@@ -175,6 +175,7 @@ class Card extends React.Component {
     const { likedUsers } = articles;
     const { id: userId } = auth.user;
     let isLiked;
+    let isTrue;
     if (likedUsers.length === 0) {
       isLiked = false;
     } else {
