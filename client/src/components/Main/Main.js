@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { getArticles } from '../../actions/articleActions';
+import ReactPaginate from 'react-paginate';
 import Card from '../Card/Card';
-import { format } from 'date-fns'
+import { format } from 'date-fns';
+import './main.scss';
 
 const Body = styled.div`
-padding-top: 50px;
+  padding-top: 50px;
   background: #E5E5E5;
   width: 100%;
   height: 100vh;
@@ -23,7 +25,7 @@ class Main extends React.Component {
     this.state = {
       offset: 0,
       data: [],
-      perPage: 10,
+      perPage: 5,
       currentPage: 0
     };
     this.handlePageClick = this
@@ -33,6 +35,13 @@ class Main extends React.Component {
 
   componentDidMount() {
     this.getData();
+    // this.renderCard();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps !== this.props) {
+      this.renderCard()
+    }
   }
 
   handlePageClick = (e) => {
@@ -43,7 +52,7 @@ class Main extends React.Component {
       currentPage: selectedPage,
       offset: offset
     }, () => {
-      this.receivedData()
+      this.renderCard()
     });
 
   };
@@ -80,7 +89,9 @@ class Main extends React.Component {
     const { likes: likesArr } = this.props.articles;
     const { user } = this.props.auth;
     const arr = Object.values(articles);
-    return arr.map((el) => {
+    ////////////////////////////
+    const slice = arr.slice(this.state.offset, this.state.offset + this.state.perPage)
+    const postData = slice.map((el) => {
       const obj = Object.assign({}, el);
       const { title, description, text, tags, date, userName, _id, likedUsers, url } = obj;
       const currentLike = likesArr.filter(({ id, likes }) => id === _id)[0].likes;
@@ -102,18 +113,46 @@ class Main extends React.Component {
           url={url}
         />
       )
-    })};
+    })
+
+    this.setState({
+      pageCount: Math.ceil(arr.length / this.state.perPage),
+
+      postData
+    })
+  };
 
   render() {
     const { articles: {articles} }  = this.props;
     const { likes: likesArr } = this.props.articles;
     const { user } = this.props.auth;
     const arr = Object.values(articles);
+    console.log(this.state.postData)
+
+    // return (
+    //   <Body>
+    //     {this.renderCard()}
+    //   </Body>)
 
     return (
       <Body>
-        {this.renderCard()}
-      </Body>)
+        {this.state.postData}
+        <ReactPaginate
+          previousLabel={"<"}
+          nextLabel={">"}
+          breakLabel={"..."}
+          breakClassName={"break-me"}
+          pageCount={this.state.pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={this.handlePageClick}
+          containerClassName={"pagination"}
+          subContainerClassName={"pages pagination"}
+          activeClassName={"active"}/>
+      </Body>
+
+    )
+
   }
 }
 
