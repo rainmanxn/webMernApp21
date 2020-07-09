@@ -56,19 +56,23 @@ const articleReducer = (state = initState, action) => {
       }}
       case POST_ARTICLE: {
       // console.log('action.payload', action.payload);
-      const { articles, likes } = state;
+      const { articles, likes, likedUsers } = state;
       const article = action.payload;
         console.log('article!!!!!!!', article);
       const like = {
         id: article._id,
         likes: article.likes,
       }
+      const likedUser = {
+        id: article._id,
+        likedUsers: []
+      }
       console.log('likes',like);
       return {
         ...state,
         articles: {...articles, article},
         likes: [...likes, like],
-        likedUsers: []
+        likedUsers: [...likedUsers, likedUser]
       }}
     case LOADING_ARTICLE:
       return {

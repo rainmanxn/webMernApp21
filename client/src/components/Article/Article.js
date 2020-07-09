@@ -33,6 +33,7 @@ const Like = styled.img.attrs((props) => ({ src: props.img }))`
 const Avatar = styled.img.attrs((props) => ({ src: props.img }))`
   height: 46px;
   width: 46px;
+  border-radius: 23px;
   margin-left: 13px;
   &:hover {
     cursor: pointer;
@@ -65,7 +66,7 @@ const Wrapper = styled.div`
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 `
 const InsideWrapper = styled.div`
-  justify-content: space-between;
+  justify-content: flex-end;
   display: flex;
 `
 const ButtonWrapper = styled.div`
@@ -144,6 +145,7 @@ const TextArticle = styled.div`
   font-size: 12px;
   line-height: 22px;
   color: rgba(0, 0, 0, 0.75);
+  word-break:break-all
 `
 const MainText = styled.div`
   margin-top: 25px;
@@ -155,6 +157,7 @@ const MainText = styled.div`
   font-size: 12px;
   line-height: 28px;
   color: rgba(0, 0, 0, 0.75);
+  word-break:break-all
 `
 const Info = styled.div`
   //width: 150px;
@@ -239,7 +242,8 @@ class Article extends React.Component {
     return null
   }
 
-  const {title, description, tags, date, userName, text, _id } = currentArticle;
+  const {title, description, tags, date, userName, text, _id, url } = currentArticle;
+  console.log('currentArticle',currentArticle)
   const { likes: likesArr } = this.props.articles;
   const likes = likesArr.filter(({ id, likes }) => id === _id)[0].likes;
   let listTags = Object.values({...tags});
@@ -250,9 +254,9 @@ class Article extends React.Component {
     )
   })
   }
-
+    const ava = url ? url : avatar;
     const { likedUsers } = articles;
-    const { id: userId } = auth.user;
+    const { id: userId, name } = auth.user;
     let isLiked;
     if (likedUsers.length === 0) {
       isLiked = false;
@@ -261,6 +265,9 @@ class Article extends React.Component {
       isLiked = (currentArticleLikes.indexOf(userId) === -1);
     }
     const textPop = 'Are you sure to delete this article?';
+    console.log('userName!!!!!', userName)
+    console.log('name!!!!!', name)
+    const stateEditButton = !(name === userName);
 
   return (
     <Body>
@@ -292,14 +299,14 @@ class Article extends React.Component {
               {formattedDate}
             </DataPost>
           </Info>
-          <Avatar img={avatar} />
+          <Avatar img={ava} />
         </InsideWrapper>
         <ButtonWrapper>
           <Popconfirm placement="rightTop" title={textPop} onConfirm={this.onDelete(_id)} okText="Yes" cancelText="No">
-            <Button className='button_del'>Delete</Button>
+            <Button primary disabled={stateEditButton} className='button_del'>Delete</Button>
           </Popconfirm>
           <Link to={`/edit/${item}`}>
-            <Button className='button_edit'>Edit</Button>
+            <Button primary disabled={stateEditButton} className='button_edit'>Edit</Button>
           </Link>
         </ButtonWrapper>
       </RightHalf>

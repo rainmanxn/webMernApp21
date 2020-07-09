@@ -238,29 +238,14 @@ class EditArticle extends React.Component {
   }
 
   render() {
-    // console.log('currentArticle', this.state.currentArticle);
     const { patchArticle } = this.props;
     const { user } = this.props.auth;
     const { currentArticle } = this.state;
     const { _id: id } = currentArticle;
-    // if (!currentArticle) {
-    //   return null;
-    // }
+
     let { title, description, text } = currentArticle;
     let tags = this.state.tags;
     if (tags === '') return null;
-    // const lengthTags = tags.length - 1;
-    // const lastTag = tags[lengthTags];
-    // if (!lastTag) return null;
-    // tags = tags.slice(0, lengthTags);
-    // console.log('tags', tags)
-    // console.log('lastTag', lastTag)
-    // const lastTag = tags[tags.length - 1];
-    // const lengthTags = tags.length - 1;
-    // console.log('lengthTags', lengthTags)
-    // tags.slice(0, lengthTags);
-    // if (!lastTag) return null;
-    // console.log('lastTag', tags)
     return (
       <BodyRegister>
         <Wrapper>

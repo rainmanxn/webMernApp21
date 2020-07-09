@@ -89,7 +89,6 @@ class Main extends React.Component {
     const { likes: likesArr } = this.props.articles;
     const { user } = this.props.auth;
     const arr = Object.values(articles);
-    ////////////////////////////
     const slice = arr.slice(this.state.offset, this.state.offset + this.state.perPage)
     const postData = slice.map((el) => {
       const obj = Object.assign({}, el);
@@ -128,11 +127,6 @@ class Main extends React.Component {
     const { user } = this.props.auth;
     const arr = Object.values(articles);
     console.log(this.state.postData)
-
-    // return (
-    //   <Body>
-    //     {this.renderCard()}
-    //   </Body>)
 
     return (
       <Body>

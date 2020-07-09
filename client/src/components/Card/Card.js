@@ -134,6 +134,7 @@ const TextArticle = styled.div`
   font-size: 12px;
   line-height: 22px;
   color: rgba(0, 0, 0, 0.75);
+  word-break:break-all
 `
 const Info = styled.div`
   //width: 150px;
