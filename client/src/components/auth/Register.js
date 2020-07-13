@@ -10,6 +10,8 @@ import './Register.scss'
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { registerUser, setErrors } from "../../actions/authActions";
+import { getErrorsSelector } from '../../redux/errors-selector';
+import { isAuthSelector, isLoadingSelector } from '../../redux/auth-selector';
 
 const BottomText = styled.div`
   width: 319px;
@@ -113,8 +115,7 @@ const MyTextInput = ({ label, ...props }) => {
   }
   const colorName = errors.name ? 'red' : '#D9D9D9'
   const colorEmail = errors.email ? 'red' : '#D9D9D9'
-  // console.log(errors);
-  // console.log(color);
+
   if (name === 'name') {
     return (
       <Container>
@@ -169,22 +170,22 @@ const MyCheckbox = ({ label, ...props }) => {
 class Register extends React.Component {
 
   componentDidMount() {
-    if (this.props.auth.isAuth) {
+    const { isAuth } = this.props;
+    if (isAuth) {
       this.props.history.push("/");
     }
   }
 
   componentDidUpdate(prevProps) {
     const { setErrors } = this.props;
-    // console.log('EEEERRR', this.props.errors.errors)
     if (prevProps.errors !== this.props.errors) {
       setErrors(this.props.errors);
     }
   }
 
   render() {
-    const { errors } = this.props.errors;
-    // console.log('REBDER ERROR', errors);
+    const { errors, loading } = this.props;
+
     return (
       <BodyRegister>
         <Wrapper>
@@ -258,7 +259,7 @@ class Register extends React.Component {
                 <Error className="red-text">
                   {errors ? errors.acceptTerms : null}
                 </Error>
-                <Button type="primary" className="submitButton" form="myForm" key="submit" htmlType="submit" loading={this.props.auth.loading}>
+                <Button type="primary" className="submitButton" form="myForm" key="submit" htmlType="submit" loading={loading}>
                   Register
               </Button>
               </FormContainer>
@@ -273,8 +274,9 @@ class Register extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
+  isAuth: isAuthSelector(state),
+  errors: getErrorsSelector(state),
+  loading: isLoadingSelector(state)
 })
 
 export default connect(

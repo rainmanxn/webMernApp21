@@ -10,6 +10,8 @@ import './Register.scss'
 import { connect } from "react-redux";
 import { loginUser, setErrors } from "../../actions/authActions";
 import { Link } from 'react-router-dom';
+import { getErrorsSelector } from '../../redux/errors-selector';
+import { isAuthSelector, isLoadingSelector } from '../../redux/auth-selector';
 
 const BottomText = styled.div`
   width: 319px;
@@ -122,24 +124,24 @@ const MyPasswordInput = ({ label, ...props }) => {
 class Login extends React.Component {
 
   componentDidMount() {
-    if (this.props.auth.isAuth) {
+    const { isAuth } = this.props;
+    if (isAuth) {
       this.props.history.push("/");
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { setErrors } = this.props;
-    console.log('ERRORS:', this.props.errors)
-    if (this.props.auth.isAuth) {
+    const { setErrors, isAuth, errors } = this.props;
+    if (isAuth) {
       this.props.history.push('/')
     }
-    if (prevProps.errors !== this.props.errors) {
-      setErrors(this.props.errors);
+    if (prevProps.errors !== errors) {
+      setErrors(errors);
     }
   }
 
   render() {
-    const { errors } = this.props;
+    const { errors, loading } = this.props;
     return (
       <BodyRegister>
         <Wrapper>
@@ -184,7 +186,7 @@ class Login extends React.Component {
                   {errors ? errors.password : null}
                   {errors ? errors.passwordincorrect : null}
                 </Error>
-                <Button type="primary" className="loginButton" form="myForm" key="submit" htmlType="submit" loading={this.props.auth.loading}>
+                <Button type="primary" className="loginButton" form="myForm" key="submit" htmlType="submit" loading={loading}>
                   Login
               </Button>
               </FormContainer>
@@ -199,9 +201,9 @@ class Login extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors,
-  loading: state.loading
+  isAuth: isAuthSelector(state),
+  errors: getErrorsSelector(state),
+  loading: isLoadingSelector(state)
 })
 
 export default connect(

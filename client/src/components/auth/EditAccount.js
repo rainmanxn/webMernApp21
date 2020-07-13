@@ -10,6 +10,9 @@ import './Register.scss'
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { registerUser, setErrors, editUser } from "../../actions/authActions";
+import { isAuthSelector, isLoadingSelector, getIdSelector } from '../../redux/auth-selector';
+import { getErrorsSelector } from '../../redux/errors-selector';
+
 
 const Line = styled.div`
   width: 320px;
@@ -98,8 +101,6 @@ const MyTextInput = ({ label, ...props }) => {
   }
   const colorName = errors.name ? 'red' : '#D9D9D9'
   const colorEmail = errors.email ? 'red' : '#D9D9D9'
-  // console.log(errors);
-  // console.log(color);
   if (name === 'name') {
     return (
       <Container>
@@ -131,38 +132,19 @@ const MyPasswordInput = ({ label, ...props }) => {
   );
 };
 
-const MyCheckbox = ({ label, ...props }) => {
-  const { id, name } = props;
-  const [field, meta] = useField({ ...props });
-  return (
-    <>
-      <ContainerCheckBox>
-        <Checkbox {...field} {...props} />
-        <label style={{marginLeft: 10}} htmlFor={id || name}>{label}</label>
-      </ContainerCheckBox>
-      <Container>
-        {
-          meta.touched && meta.error ? (
-            <Error>{meta.error}</Error>
-          ) : null
-        }
-      </Container>
-    </>
-  );
-};
-
 class EditAccount extends React.Component {
 
   componentDidMount() {
-    if (!this.props.auth.isAuth) {
+    const { isAuth } = this.props;
+    if (!isAuth) {
       this.props.history.push("/login");
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { setErrors } = this.props;
+    const { setErrors, isAuth } = this.props;
     console.log('ERRORS:', this.props.errors)
-    if (!this.props.auth.isAuth) {
+    if (!isAuth) {
       this.props.history.push('/login')
     }
     if (prevProps.errors !== this.props.errors) {
@@ -171,26 +153,22 @@ class EditAccount extends React.Component {
   }
 
   render() {
-    const { errors } = this.props.errors;
-    // console.log('REBDER ERROR', errors);
+    const { errors, loading } = this.props;
+
     return (
       <BodyRegister>
         <Wrapper>
           <Formik
             initialValues={
-              this.props.errors
+              errors
             }
             onSubmit={(fields) => {
-              const { registerUser, history, auth, editUser } = this.props;
-              const { id, email: currentEmail } = auth.user;
-              // console.log('fields!!!', fields);
+              const { editUser, id } = this.props;
               const { name, email, password, url } = fields;
               const newUser = {
                 name, email, password, url, id
               };
               editUser(newUser);
-              console.log(auth.user)
-              // console.log(auth)
             }}
             render={() => (
               <Form id="myForm">
@@ -227,7 +205,7 @@ class EditAccount extends React.Component {
                     className="inputForm"
                     errors={errors}
                   />
-                  <Button type="primary" className="editSubmitButton" form="myForm" key="submit" htmlType="submit" loading={this.props.auth.loading}>
+                  <Button type="primary" className="editSubmitButton" form="myForm" key="submit" htmlType="submit" loading={loading}>
                     Save
                   </Button>
                 </FormContainer>
@@ -241,8 +219,11 @@ class EditAccount extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  id: getIdSelector(state),
   auth: state.auth,
-  errors: state.errors
+  loading: isLoadingSelector(state),
+  errors: getErrorsSelector(state),
+  isAuth: isAuthSelector(state)
 })
 
 export default connect(
