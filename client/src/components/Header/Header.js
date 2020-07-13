@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { logoutUser } from '../../actions/authActions';
 import avatar from '../Card/avatar.png';
+import { getNameSelector, getUserSelector, getUserUrlSelector } from '../../redux/auth-selector';
 
 const Avatar = styled.img.attrs((props) => ({ src: props.img }))`
   height: 46px;
@@ -19,7 +20,6 @@ const Avatar = styled.img.attrs((props) => ({ src: props.img }))`
     cursor: pointer;
   }
 `;
-
 const UserName = styled.div`
   font-family: Inter,serif;
   font-style: normal;
@@ -28,12 +28,10 @@ const UserName = styled.div`
   line-height: 28px;
   color: rgba(0, 0, 0, 0.85);
 `
-
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
 `
-
 const Wrapper = styled.div`
   width: 100%;
   height: 80px;
@@ -41,7 +39,6 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 `
-
 const Text = styled.div`
   font-family: 'Inter', sans-serif;
   font-style: normal;
@@ -54,9 +51,7 @@ const Text = styled.div`
 
 
  const Header = (props) => {
-  const { user } = props.auth;
-  let { url } = user;
-  // console.log('!!!!!!!!!', user)
+  let { user, url, name } = props;
   if (!url) {
     url = avatar;
   }
@@ -104,8 +99,7 @@ const Text = styled.div`
        return (
            <Link to='/editaccount'>
          <UserInfo>
-              <UserName>{user.name}</UserName>
-              {/*<Avatar img='http://www.1zoom.net/prev2/290/289597.jpg' />*/}
+              <UserName>{name}</UserName>
               <Avatar img={url} />
          </UserInfo>
            </Link>
@@ -145,11 +139,13 @@ const Text = styled.div`
 
 Header.propTypes = {
   logoutUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  user: getUserSelector(state),
+  url: getUserUrlSelector(state),
+  name: getNameSelector(state),
 })
 
 export default connect(

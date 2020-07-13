@@ -12,6 +12,8 @@ export const currentArticleSelector = createSelector(getArticlesListSelector,  (
   return arr.filter(({ _id }) => _id === item)[0];
 })
 
+export const getLikesSelector = createSelector(getLikes, (likes) => likes);
+
 export const getCountLikesSelector = createSelector(getLikes, (likes) => (_id) => {
   return likes.filter(({ id }) => id === _id)[0].likes
 });

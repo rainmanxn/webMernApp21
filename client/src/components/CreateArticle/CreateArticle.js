@@ -263,8 +263,6 @@ class CreateArticle extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  loadingArticle: state.loadingArticle,
-  auth: state.auth,
   isAuth: isAuthSelector(state),
   user: getUserSelector(state),
   url: getUserUrlSelector(state),

@@ -6,6 +6,7 @@ import ReactPaginate from 'react-paginate';
 import Card from '../Card/Card';
 import { format } from 'date-fns';
 import './main.scss';
+import { getArticlesListSelector, getLikesSelector } from '../../redux/articles-selectors';
 
 const Body = styled.div`
   padding-top: 50px;
@@ -35,7 +36,6 @@ class Main extends React.Component {
 
   componentDidMount() {
     this.getData();
-    // this.renderCard();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -54,7 +54,6 @@ class Main extends React.Component {
     }, () => {
       this.renderCard()
     });
-
   };
 
   getData = () => {
@@ -64,7 +63,6 @@ class Main extends React.Component {
     } catch (e) {
       getArticles();
     }
-
   }
 
   getUTCDate(dateString = Date.now()) {
@@ -84,17 +82,14 @@ class Main extends React.Component {
     return format(this.getUTCDate(date), 'MMMM dd, yyyy')
   }
 
-  renderCard = () => {
-    const { articles: {articles} }  = this.props;
-    const { likes: likesArr } = this.props.articles;
-    const { user } = this.props.auth;
+  getPostData = () => {
+    const { articles, likes }  = this.props;
     const arr = Object.values(articles);
-    const slice = arr.slice(this.state.offset, this.state.offset + this.state.perPage)
-    const postData = slice.map((el) => {
+    const slice = arr.slice(this.state.offset, this.state.offset + this.state.perPage);
+    return slice.map((el) => {
       const obj = Object.assign({}, el);
       const { title, description, text, tags, date, userName, _id, likedUsers, url } = obj;
-      const currentLike = likesArr.filter(({ id, likes }) => id === _id)[0].likes;
-      const dateNew = Date.now();
+      const currentLike = likes.filter(({ id }) => id === _id)[0].likes;
       const formattedDate = this.getDate(date)
       return (
         <Card
@@ -113,21 +108,21 @@ class Main extends React.Component {
         />
       )
     })
+  }
+
+  renderCard = () => {
+    const { articles }  = this.props;
+    const arr = Object.values(articles);
+    const postData = this.getPostData();
 
     this.setState({
       pageCount: Math.ceil(arr.length / this.state.perPage),
-
       postData
     })
   };
 
   render() {
-    const { articles: {articles} }  = this.props;
-    const { likes: likesArr } = this.props.articles;
-    const { user } = this.props.auth;
-    const arr = Object.values(articles);
-    console.log(this.state.postData)
-
+    const { pageCount } = this.state;
     return (
       <Body>
         {this.state.postData}
@@ -136,7 +131,7 @@ class Main extends React.Component {
           nextLabel={">"}
           breakLabel={"..."}
           breakClassName={"break-me"}
-          pageCount={this.state.pageCount}
+          pageCount={pageCount}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={this.handlePageClick}
@@ -144,15 +139,13 @@ class Main extends React.Component {
           subContainerClassName={"pages pagination"}
           activeClassName={"active"}/>
       </Body>
-
     )
-
   }
 }
 
 const mapStateToProps = state => ({
-  articles: state.articles,
-  auth: state.auth
+  articles: getArticlesListSelector(state),
+  likes: getLikesSelector(state),
 })
 
 export default connect(

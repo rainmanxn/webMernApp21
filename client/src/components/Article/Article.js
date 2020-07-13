@@ -190,7 +190,7 @@ const DataPost = styled.div`
 
 class Article extends React.Component {
   componentDidMount() {
-    const { isAuth } = this.props;
+    const { isAuth, getArticles } = this.props;
     getArticles();
     if (!isAuth) {
       this.props.history.push("/login");
@@ -236,8 +236,8 @@ class Article extends React.Component {
 
   render() {
   const { item, selectCurrentArticle, likesList, userId, name, currentArticleLikes, likedUsers } = this.props;
-  console.log('ITEM', item)
   const currentArticle = selectCurrentArticle(item);
+  console.log('currentArticle!!', currentArticle)
 
   if (!currentArticle) {
     return null

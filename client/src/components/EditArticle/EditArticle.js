@@ -2,15 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { Form, Formik, useField } from 'formik';
 import { Button, Input } from 'antd';
-// import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getArticles, patchArticle } from '../../actions/articleActions';
 import PropTypes from 'prop-types';
-import __ from 'lodash';
-import { Link } from 'react-router-dom';
+import { getNameSelector, getUserSelector, isAuthSelector } from '../../redux/auth-selector';
+import { currentArticleSelector } from '../../redux/articles-selectors';
 
 const { TextArea } = Input;
-
 const Container = styled.div`
   margin-left: 32px;
   width: 874px;
@@ -20,7 +18,6 @@ const Container = styled.div`
   flex-grow: 0;
   margin-top: 21px;
 `;
-
 const Containertags = styled.div`
   //margin-bottom: 100px;
   width: 550px;
@@ -30,7 +27,6 @@ const Containertags = styled.div`
   flex-direction: row;
   flex-grow: 0;
 `;
-
 const FormContainer = styled.div`
   width: 874px;
   display: flex;
@@ -56,12 +52,10 @@ const Text = styled.div`
   text-align: center;
   color: #262626;
 `
-
 const LabelTag = styled.div`
   margin-left: 32px;
   margin-top: 20px;
 `
-
 const Wrapper = styled.div`
   width: 938px;
   margin-top: 59px;
@@ -72,7 +66,6 @@ const Wrapper = styled.div`
   box-shadow: 0px 0.608796px 2.93329px rgba(0, 0, 0, 0.0196802), 0px 1.46302px 7.04911px rgba(0, 0, 0, 0.0282725), 0px 2.75474px 13.2728px rgba(0, 0, 0, 0.035), 0px 4.91399px 23.6765px rgba(0, 0, 0, 0.0417275), 0px 9.19107px 44.2843px rgba(0, 0, 0, 0.0503198), 0px 22px 106px rgba(0, 0, 0, 0.07);
   border-radius: 6px;
 `
-
 const MyTextInput = ({ label, ...props }) => {
   let { id, name, errors } = props;
   const [field] = useField(props);
@@ -88,7 +81,6 @@ const MyTextInput = ({ label, ...props }) => {
     </Container>
   );
 };
-
 const MyTextAreaInput = ({ label, ...props }) => {
   let { id, name, errors } = props;
   const [field] = useField(props);
@@ -104,8 +96,6 @@ const MyTextAreaInput = ({ label, ...props }) => {
     </Container>
   );
 };
-
-
 const MyTagsList = ({ label, ...props }) => {
   const { id, name, value } = props;
   const [field] = useField(props);
@@ -176,53 +166,30 @@ class EditArticle extends React.Component {
 
 
   componentDidMount() {
-    const { getArticles } = this.props;
+    const { getArticles, isAuth } = this.props;
+    if (!isAuth) {
+          this.props.history.push("/login");
+        }
     getArticles();
   }
-  // getNewArticles = async () => {
-  //   try {
-  //     const response = await axios.get('http://localhost:5000/api/articles/articles');
-  //     console.log(response.data);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
 
   updateState = (tags) => {
     this.setState(() => {return {tags}});
   }
-  // componentDidMount() {
-  //   if (this.props.auth.isAuth) {
-  //     this.props.history.push("/dashboard");
-  //   }
-  // }
-  //
-  // componentDidUpdate(prevProps) {
-  //   const { setErrors } = this.props;
-  //   console.log('ERRORS:', this.props.errors)
-  //   if (this.props.auth.isAuth) {
-  //     this.props.history.push('/dashboard')
-  //   }
-  //   if (prevProps.errors !== this.props.errors) {
-  //     setErrors(this.props.errors);
-  //   }
-  // }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    let currentArticle = this.getCurrentArticle();
+    const { getCurrentArticle, item } = this.props;
+    let currentArticle = getCurrentArticle(item);
     let tags = this.state.tags;
-    // console.log('currentArticle', this.state.currentArticle);
     if (!currentArticle) {
       return null;
     }
     if (this.state.currentArticle === '') {
-      // console.log('tut');
       this.setState(() => {return {currentArticle}})
     } else {
       currentArticle = this.state.currentArticle;
     }
     if (this.state.tags === '') {
-      // console.log('tut');
       this.setState(() => {return {tags: currentArticle.tags}})
     }
     if (tags !== this.state.tags) {
@@ -230,22 +197,11 @@ class EditArticle extends React.Component {
     }
   }
 
-  getCurrentArticle = () => {
-    const { articles, item } = this.props;
-    let { articles: listArticles } = articles;
-    listArticles = Object.values(listArticles);
-    return listArticles.filter((el) => el._id === item)[0];
-  }
-
   render() {
-    const { patchArticle } = this.props;
-    const { user } = this.props.auth;
-    const { currentArticle } = this.state;
-    const { _id: id } = currentArticle;
-
-    let { title, description, text } = currentArticle;
-    let tags = this.state.tags;
+    const { patchArticle, user, userName } = this.props;
+    let { currentArticle, tags } = this.state;
     if (tags === '') return null;
+
     return (
       <BodyRegister>
         <Wrapper>
@@ -255,14 +211,9 @@ class EditArticle extends React.Component {
               currentArticle
             }
             onSubmit={(fields) => {
-              // const { loginUser } = this.props;
-              const { currentArticle } = this.state;
+              const { currentArticle, tags } = this.state;
               const { _id: id, likedUsers } = currentArticle;
-              // console.log('ID!!!!!!!!!', id)
               const { title, description, text } = fields;
-              const { tags } = this.state;
-              const { name: userName } = user;
-              // console.log('USER!!!    ', userName);
               const articleFields = {
                 title,
                 description,
@@ -273,9 +224,6 @@ class EditArticle extends React.Component {
                 likedUsers
               }
               patchArticle(articleFields, id);
-              // loginUser(loggedUser);
-              console.log('SUBMIT')
-              // console.log(articleFields)
               this.props.history.push(`/articles/${id}`)
             }}
             render={() => (
@@ -286,7 +234,6 @@ class EditArticle extends React.Component {
                     name="title"
                     type="text"
                     id="title"
-                    // value={title}
                     className="inputForm"
                   />
                   <MyTextInput
@@ -294,7 +241,6 @@ class EditArticle extends React.Component {
                     name="description"
                     type="text"
                     id="description"
-                    // value={description}
                     className="inputForm"
                   />
                   <MyTextAreaInput
@@ -303,7 +249,6 @@ class EditArticle extends React.Component {
                     type="text"
                     id="text"
                     className="inputForm"
-                    // value={text}
                   />
                   <LabelTag>Tags</LabelTag>
                   {tags.map(({ value, id }) => {
@@ -345,10 +290,10 @@ class EditArticle extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  articles: state.articles,
-  // errors: state.errors,
-  loadingArticle: state.loadingArticle,
-  auth: state.auth
+  isAuth: isAuthSelector(state),
+  getCurrentArticle: currentArticleSelector(state),
+  user: getUserSelector(state),
+  userName: getNameSelector(state),
 })
 
 export default connect(
