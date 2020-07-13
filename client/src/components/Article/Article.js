@@ -9,6 +9,9 @@ import 'antd/dist/antd.css';
 import { Link } from 'react-router-dom';
 import { format } from "date-fns";
 import liked from '../Card/liked.svg';
+import { getArticlesListSelector, currentArticleSelector, getCountLikesSelector,
+  getCurrentArticleLikesCount, getLikedUsersSelector } from '../../redux/articles-selectors';
+import { getIdSelector, getNameSelector, isAuthSelector } from '../../redux/auth-selector'
 
 const Body = styled.div`
 padding-top: 1px;
@@ -160,9 +163,7 @@ const MainText = styled.div`
   word-break:break-all
 `
 const Info = styled.div`
-  //width: 150px;
   height: 46px;
-  //border: 1px solid black;
 `
 
 const Name = styled.div`
@@ -189,9 +190,9 @@ const DataPost = styled.div`
 
 class Article extends React.Component {
   componentDidMount() {
-    const { getArticles } = this.props;
+    const { isAuth } = this.props;
     getArticles();
-    if (!this.props.auth.isAuth) {
+    if (!isAuth) {
       this.props.history.push("/login");
     }
   }
@@ -224,50 +225,37 @@ class Article extends React.Component {
     setLike(id, likes, userId);
   }
 
- confirm = () => {
-    console.log('Clicked on Yes.');
+
+  renderTags = (listTags) => {
+    return listTags.map(({ value, id }) => {
+      return (
+        <Tag key={`${id} + ${value}`}>{value}</Tag>
+      )
+    })
   }
 
-
   render() {
-  const { articles, item, auth } = this.props;
-  // if (!articles) return null;
-  const articlesList = articles.articles;
-  console.log('articles!!!!', articles)
-  const arr = Object.values(articlesList);
-  const currentArticle = arr.filter(({ _id }) => _id === item)[0];
+  const { item, selectCurrentArticle, likesList, userId, name, currentArticleLikes, likedUsers } = this.props;
+  const currentArticle = selectCurrentArticle(item);
 
   if (!currentArticle) {
-    console.log('TUT')
     return null
   }
 
   const {title, description, tags, date, userName, text, _id, url } = currentArticle;
-  console.log('currentArticle',currentArticle)
-  const { likes: likesArr } = this.props.articles;
-  const likes = likesArr.filter(({ id, likes }) => id === _id)[0].likes;
+  const likes = likesList(_id);
   let listTags = Object.values({...tags});
   const formattedDate = this.getDate(date)
-  const renderTags = () => { return listTags.map(({ value, id }) => {
-    return (
-      <Tag key={`${id} + ${value}`}>{value}</Tag>
-    )
-  })
+  const ava = url ? url : avatar;
+
+  let isLiked;
+  if (likedUsers.length === 0) {
+    isLiked = false;
+  } else {
+    isLiked = (currentArticleLikes(_id).indexOf(userId) === -1);
   }
-    const ava = url ? url : avatar;
-    const { likedUsers } = articles;
-    const { id: userId, name } = auth.user;
-    let isLiked;
-    if (likedUsers.length === 0) {
-      isLiked = false;
-    } else {
-      const currentArticleLikes = likedUsers.filter(({ id: articleID }) => articleID === _id)[0].likedUsers;
-      isLiked = (currentArticleLikes.indexOf(userId) === -1);
-    }
-    const textPop = 'Are you sure to delete this article?';
-    console.log('userName!!!!!', userName)
-    console.log('name!!!!!', name)
-    const stateEditButton = !(name === userName);
+  const textPop = 'Are you sure to delete this article?';
+  const stateEditButton = !(name === userName);
 
   return (
     <Body>
@@ -283,7 +271,7 @@ class Article extends React.Component {
           <CountLikes>{likes}</CountLikes>
         </Header>
         <TagBlock>
-          {renderTags()}
+          {this.renderTags(listTags)}
         </TagBlock>
         <TextArticle>
           {description}
@@ -303,10 +291,10 @@ class Article extends React.Component {
         </InsideWrapper>
         <ButtonWrapper>
           <Popconfirm placement="rightTop" title={textPop} onConfirm={this.onDelete(_id)} okText="Yes" cancelText="No">
-            <Button primary disabled={stateEditButton} className='button_del'>Delete</Button>
+            <Button primary='true' disabled={stateEditButton} className='button_del'>Delete</Button>
           </Popconfirm>
           <Link to={`/edit/${item}`}>
-            <Button primary disabled={stateEditButton} className='button_edit'>Edit</Button>
+            <Button primary='true' disabled={stateEditButton} className='button_edit'>Edit</Button>
           </Link>
         </ButtonWrapper>
       </RightHalf>
@@ -321,9 +309,14 @@ class Article extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  articles: state.articles,
-  loadingArticle: state.loadingArticle,
-  auth: state.auth
+  articlesList: getArticlesListSelector(state),
+  selectCurrentArticle: currentArticleSelector(state),
+  likesList: getCountLikesSelector(state),
+  userId: getIdSelector(state),
+  name: getNameSelector(state),
+  likedUsers: getLikedUsersSelector(state),
+  currentArticleLikes: getCurrentArticleLikesCount(state),
+  isAuth: isAuthSelector(state),
 })
 
 export default connect(
