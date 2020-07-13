@@ -12,7 +12,6 @@ export const getArticles = () => async (dispatch) => {
 export const postArticle = (article) => async (dispatch) => {
   dispatch(setArticleLoading());
   const response = await axios.post('api/articles/create', article);
-  // console.log('RESPONSE', response);
   dispatch(postArticleAction(response.data));
   dispatch(stopArticleLoading());
 }
@@ -20,21 +19,17 @@ export const postArticle = (article) => async (dispatch) => {
 export const patchArticle = (article, id) => async (dispatch) => {
   dispatch(setArticleLoading());
   console.log(article, id);
-  // const id = article._id;
   const response = await axios.patch(`/api/articles/edit/${id}`, article);
   console.log('RESPONSE', response.data);
-  // dispatch(postArticleAction(article));
   dispatch(stopArticleLoading());
 }
 
 export const setLike = (id, likes, userId) => async (dispatch) => {
   const like = likes;
-  // console.log('xz',id, likes, 'userId', userId)
+  dispatch(setArticleLoading());
   const response = await axios.patch(`/api/articles/edit/likes/${id}`, {id, like, userId });
   dispatch(incLike({id, like, userId}));
-  // console.log('click!!!!!!!!!!!!!!!!!', id, like, userId)
-  // console.log('id, likes')
-  // console.log(response);
+  dispatch(stopArticleLoading());
 }
 
 export const deleteArticle = (id) => async (dispatch) => {

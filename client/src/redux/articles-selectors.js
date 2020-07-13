@@ -3,9 +3,12 @@ import { createSelector } from 'reselect';
 export const getArticlesSelector = state => state.articles.articles;
 export const getLikes = state =>  state.articles.likes;
 export const getLikedUsers = state =>  state.articles.likedUsers;
+export const getArticleLoading = state => state.articles.loadingArticle;
 
 
 export const getArticlesListSelector = createSelector(getArticlesSelector, (articles) => articles);
+
+export const getArticleLoadingSelector = createSelector(getArticleLoading, (loading) => loading);
 
 export const currentArticleSelector = createSelector(getArticlesListSelector,  (articles) => (item) => {
   const arr = Object.values(articles);

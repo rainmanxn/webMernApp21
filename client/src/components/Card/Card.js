@@ -8,8 +8,11 @@ import { connect } from 'react-redux';
 import { deleteArticle, getArticles, setLike } from '../../actions/articleActions';
 import './Card.scss'
 import { isAuthSelector, getIdSelector } from '../../redux/auth-selector';
-import { getCurrentArticleLikesCount, getLikedUsersSelector } from '../../redux/articles-selectors';
-
+import {
+  getArticleLoadingSelector,
+  getCurrentArticleLikesCount,
+  getLikedUsersSelector,
+} from '../../redux/articles-selectors';
 
 const Like = styled.img.attrs((props) => ({ src: props.img }))`
   height: 14px;
@@ -143,10 +146,12 @@ const DataPost = styled.div`
 
 class Card extends React.Component {
   onLike = (id, likes, userId) => () => {
-    const { isAuth } =this.props;
-    if (isAuth) {
-      const { setLike } = this.props;
-      setLike(id, likes, userId);
+    const { isAuth, isLoading } =this.props;
+    if (!isLoading) {
+      if (isAuth) {
+        const { setLike } = this.props;
+        setLike(id, likes, userId);
+      }
     }
   }
 
@@ -168,7 +173,8 @@ class Card extends React.Component {
   linkCard = () => <Link to='/create' />;
 
   render() {
-    const { title, description, date, userName, id, likes, url, userId } = this.props;
+    const { title, description, date, userName, id, likes, url, userId, isLoading } = this.props;
+    // console.log('isLoading',isLoading)
     const isLiked = this.getIsLikedArticle();
     const picture = url ? url : avatar;
 
@@ -213,6 +219,7 @@ const mapStateToProps = state => ({
   likedUsers: getLikedUsersSelector(state),
   userId: getIdSelector(state),
   currentArticleLikes: getCurrentArticleLikesCount(state),
+  isLoading: getArticleLoadingSelector(state),
 })
 
 export default connect(

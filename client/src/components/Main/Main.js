@@ -6,7 +6,7 @@ import ReactPaginate from 'react-paginate';
 import Card from '../Card/Card';
 import { format } from 'date-fns';
 import './main.scss';
-import { getArticlesListSelector, getLikesSelector } from '../../redux/articles-selectors';
+import { getArticleLoadingSelector, getArticlesListSelector, getLikesSelector } from '../../redux/articles-selectors';
 
 const Body = styled.div`
   padding-top: 50px;
@@ -123,6 +123,8 @@ class Main extends React.Component {
 
   render() {
     const { pageCount } = this.state;
+    const { isLoading } = this.props;
+    console.log(isLoading);
     return (
       <Body>
         {this.state.postData}
@@ -146,6 +148,7 @@ class Main extends React.Component {
 const mapStateToProps = state => ({
   articles: getArticlesListSelector(state),
   likes: getLikesSelector(state),
+  isLoading: getArticleLoadingSelector(state),
 })
 
 export default connect(

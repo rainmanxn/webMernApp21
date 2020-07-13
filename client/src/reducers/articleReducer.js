@@ -32,8 +32,6 @@ const articleReducer = (state = initState, action) => {
         }
         return { id, likes }
       })
-      console.log('likes', likes);
-      // console.log('isLiked', isLiked);
 
       return {
         ...state,
