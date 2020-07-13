@@ -2,14 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { Form, Formik, useField } from 'formik';
 import { Button, Input } from 'antd';
-// import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getArticles, postArticle } from '../../actions/articleActions';
 import PropTypes from 'prop-types';
-import __ from 'lodash';
+import { getNameSelector, getUserSelector, getUserUrlSelector, isAuthSelector } from '../../redux/auth-selector';
 
 const { TextArea } = Input;
-
 const Container = styled.div`
   margin-left: 32px;
   width: 874px;
@@ -19,7 +17,6 @@ const Container = styled.div`
   flex-grow: 0;
   margin-top: 21px;
 `;
-
 const Containertags = styled.div`
   //margin-bottom: 100px;
   width: 550px;
@@ -29,7 +26,6 @@ const Containertags = styled.div`
   flex-direction: row;
   flex-grow: 0;
 `;
-
 const FormContainer = styled.div`
   width: 874px;
   display: flex;
@@ -55,12 +51,10 @@ const Text = styled.div`
   text-align: center;
   color: #262626;
 `
-
 const LabelTag = styled.div`
   margin-left: 32px;
   margin-top: 20px;
 `
-
 const Wrapper = styled.div`
   width: 938px;
   margin-top: 59px;
@@ -71,7 +65,6 @@ const Wrapper = styled.div`
   box-shadow: 0px 0.608796px 2.93329px rgba(0, 0, 0, 0.0196802), 0px 1.46302px 7.04911px rgba(0, 0, 0, 0.0282725), 0px 2.75474px 13.2728px rgba(0, 0, 0, 0.035), 0px 4.91399px 23.6765px rgba(0, 0, 0, 0.0417275), 0px 9.19107px 44.2843px rgba(0, 0, 0, 0.0503198), 0px 22px 106px rgba(0, 0, 0, 0.07);
   border-radius: 6px;
 `
-
 const MyTextInput = ({ label, ...props }) => {
   let { id, name, errors } = props;
   const [field] = useField(props);
@@ -87,7 +80,6 @@ const MyTextInput = ({ label, ...props }) => {
     </Container>
   );
 };
-
 const MyTextAreaInput = ({ label, ...props }) => {
   let { id, name, errors } = props;
   const [field] = useField(props);
@@ -103,8 +95,6 @@ const MyTextAreaInput = ({ label, ...props }) => {
     </Container>
   );
 };
-
-
 const MyTagsList = ({ label, ...props }) => {
   const { id, name, value } = props;
   const [field] = useField(props);
@@ -173,46 +163,22 @@ class CreateArticle extends React.Component {
   }
 
   componentDidMount() {
+    const { isAuth } = this.props;
+    if (!isAuth) {
+      this.props.history.push("/login");
+    }
     const { getArticles } = this.props;
     getArticles();
-    // this.getNewArticles();
   }
-
-  // getNewArticles = async () => {
-  //   try {
-  //     const response = await axios.get('http://localhost:5000/api/articles/articles');
-  //     console.log(response.data);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
 
   updateState = (tags) => {
     this.setState(() => {return {tags}});
   }
-  // componentDidMount() {
-  //   if (this.props.auth.isAuth) {
-  //     this.props.history.push("/dashboard");
-  //   }
-  // }
-  //
-  // componentDidUpdate(prevProps) {
-  //   const { setErrors } = this.props;
-  //   console.log('ERRORS:', this.props.errors)
-  //   if (this.props.auth.isAuth) {
-  //     this.props.history.push('/dashboard')
-  //   }
-  //   if (prevProps.errors !== this.props.errors) {
-  //     setErrors(this.props.errors);
-  //   }
-  // }
 
   render() {
-    const { postArticle } = this.props;
+    const { postArticle, user, url, userName } = this.props;
     const { tags } = this.state;
-    const { user } = this.props.auth;
-    // console.log('USER', user);
-    // console.log('articles', articles.articles[0])
+
     return (
       <BodyRegister>
         <Wrapper>
@@ -222,12 +188,7 @@ class CreateArticle extends React.Component {
               this.props
             }
             onSubmit={(fields) => {
-              const { url } = this.props.auth.user;
-              console.log(url)
               const { title, description, text } = fields;
-              const { tags } = this.state;
-              const { name: userName } = user;
-              console.log('USER!!!    ', userName);
               const articleFields = {
                 title,
                 description,
@@ -239,9 +200,6 @@ class CreateArticle extends React.Component {
                 url
               }
               postArticle(articleFields);
-              // loginUser(loggedUser);
-              console.log('SUBMIT')
-              console.log(articleFields)
               this.props.history.push("/")
             }}
             render={() => (
@@ -305,10 +263,12 @@ class CreateArticle extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  articles: state.articles,
-  // errors: state.errors,
   loadingArticle: state.loadingArticle,
-  auth: state.auth
+  auth: state.auth,
+  isAuth: isAuthSelector(state),
+  user: getUserSelector(state),
+  url: getUserUrlSelector(state),
+  userName: getNameSelector(state),
 })
 
 export default connect(

@@ -236,6 +236,7 @@ class Article extends React.Component {
 
   render() {
   const { item, selectCurrentArticle, likesList, userId, name, currentArticleLikes, likedUsers } = this.props;
+  console.log('ITEM', item)
   const currentArticle = selectCurrentArticle(item);
 
   if (!currentArticle) {

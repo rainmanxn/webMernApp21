@@ -7,12 +7,9 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { deleteArticle, getArticles, setLike } from '../../actions/articleActions';
 import './Card.scss'
-// import { createBrowserHistory } from 'history';
-// let history = createBrowserHistory();
-// import history from 'history/browser';
-// let history = createBrowserHistory({
-//   window: iframe.contentWindow
-// });
+import { isAuthSelector, getIdSelector } from '../../redux/auth-selector';
+import { getCurrentArticleLikesCount, getLikedUsersSelector } from '../../redux/articles-selectors';
+
 
 const Like = styled.img.attrs((props) => ({ src: props.img }))`
   height: 14px;
@@ -21,7 +18,6 @@ const Like = styled.img.attrs((props) => ({ src: props.img }))`
     cursor: pointer;
   }
 `;
-
 const Avatar = styled.img.attrs((props) => ({ src: props.img }))`
   height: 46px;
   width: 46px;
@@ -31,7 +27,6 @@ const Avatar = styled.img.attrs((props) => ({ src: props.img }))`
     cursor: pointer;
   }
 `;
-
 const CountLikes = styled.div`
   width: 13px;
   height: 22px;
@@ -43,7 +38,6 @@ const CountLikes = styled.div`
   line-height: 22px;
   color: rgba(0, 0, 0, 0.75);
 `
-
 const Wrapper = styled.div`
   position: relative;
   //margin-left: 150px;
@@ -57,7 +51,6 @@ const Wrapper = styled.div`
   justify-content: space-between;
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 `
-
 const LeftHalf = styled.div`
   margin-top: 15px;
   margin-left: 19px;
@@ -76,21 +69,11 @@ const RightHalf = styled.div`
   display: flex;
   justify-content: flex-end;
 `
-// const BodyCard = styled.div`
-//   background: #E5E5E5;
-//   width: 100%;
-//   height: 100vh;
-//   position: relative;
-//   display: flex;
-//   justify-content: center;
-// `
-
 const Header = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
 `
-
 const Title = styled.div`
   height: 28px;
   font-family: Inter,serif;
@@ -102,13 +85,10 @@ const Title = styled.div`
   align-items: center;
   color: #1890FF;
 `
-
 const TagBlock = styled.div`
   display: flex;
   height: 40px;
-  //border: 1px solid black;
 `
-
 const Tag = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.5);
   height: 20px;
@@ -124,7 +104,6 @@ const Tag = styled.div`
   line-height: 15px;
   color: rgba(0, 0, 0, 0.5);
 `
-
 const TextArticle = styled.div`
   width: 682px;
   height: 45px;
@@ -141,7 +120,6 @@ const Info = styled.div`
   height: 46px;
   //border: 1px solid black;
 `
-
 const Name = styled.div`
   font-family: Inter,serif;
   font-style: normal;
@@ -152,7 +130,6 @@ const Name = styled.div`
   align-items: center;
   color: rgba(0, 0, 0, 0.85);
 `
-
 const DataPost = styled.div`
   font-family: Inter,serif;
   font-style: normal;
@@ -165,52 +142,38 @@ const DataPost = styled.div`
 `
 
 class Card extends React.Component {
-  // const {title, description, text, tags, date} = props;
   onLike = (id, likes, userId) => () => {
-    const { auth } = this.props;
-    const { isAuth } = auth;
+    const { isAuth } =this.props;
     if (isAuth) {
       const { setLike } = this.props;
       setLike(id, likes, userId);
     }
   }
 
+  getIsLikedArticle = () => {
+    const { likedUsers, currentArticleLikes, userId, id } = this.props;
+    return (likedUsers.length === 0) ? false : (currentArticleLikes(id).indexOf(userId) === -1)
+  }
+
+  renderTags = () => {
+    const { tags } = this.props;
+    let listTags = Object.values({ ...tags });
+    return listTags.map(({ value, id }) => {
+      return (
+        <Tag key={`${id} + ${value}`}>{value}</Tag>
+      )
+    })
+  }
+
+  linkCard = () => <Link to='/create' />;
 
   render() {
-    const { title, description, tags, date, userName, id, likes, auth, articles, url } = this.props;
-    const { likedUsers } = articles;
-    const { id: userId } = auth.user;
-    let isLiked;
-    let isTrue;
-    if (likedUsers.length === 0) {
-      isLiked = false;
-    } else {
-      const currentArticleLikes = likedUsers.filter(({ id: articleID }) => articleID === id)[0].likedUsers;
-      isLiked = (currentArticleLikes.indexOf(userId) === -1);
-      // console.log('isliked', isLiked);
-    }
-    let listTags = Object.values({ ...tags });
-    const renderTags = () => {
-      return listTags.map(({ value, id }) => {
-        return (
-          <Tag key={`${id} + ${value}`}>{value}</Tag>
-        )
-      })
-    }
-
-    const linkCard = () => {
-      // console.log(id)
-      // history.push("/create")
-      return (
-        <Link to='/create' />
-      )
-    }
-
+    const { title, description, date, userName, id, likes, url, userId } = this.props;
+    const isLiked = this.getIsLikedArticle();
     const picture = url ? url : avatar;
-    // console.log(title, description, text, tags, date);
+
     return (
-      // <BodyCard>
-      <Wrapper onClick={linkCard}>
+      <Wrapper onClick={this.linkCard}>
         <LeftHalf>
           <Header>
             <Title>{title}</Title>
@@ -221,7 +184,7 @@ class Card extends React.Component {
             <CountLikes>{likes}</CountLikes>
           </Header>
           <TagBlock>
-            {renderTags()}
+            {this.renderTags()}
           </TagBlock>
           <Link to={`/articles/${id}`}>
           <TextArticle>
@@ -241,14 +204,15 @@ class Card extends React.Component {
           <Avatar img={picture}/>
         </RightHalf>
       </Wrapper>
-
     )
   }
 }
 
 const mapStateToProps = state => ({
-  articles: state.articles,
-  auth: state.auth
+  isAuth: isAuthSelector(state),
+  likedUsers: getLikedUsersSelector(state),
+  userId: getIdSelector(state),
+  currentArticleLikes: getCurrentArticleLikesCount(state),
 })
 
 export default connect(
