@@ -13,7 +13,6 @@ const authReducer = (state = inititalState, action) => {
       const { name, email, password, url } = action.payload;
       let { user } = state;
       user = { ...user, name, email, password, url }
-      console.log('user', user);
       return {
         ...state,
         user: user
@@ -25,13 +24,11 @@ const authReducer = (state = inititalState, action) => {
         user: action.payload
       };
     case USER_LOADING:
-      // console.log("STARTED!!!")
       return {
         ...state,
         loading: true
       };
     case STOP_USER_LOADING:
-      // console.log("STOPPED!!!")
       return {
         ...state,
         loading: false

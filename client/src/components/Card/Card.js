@@ -11,7 +11,7 @@ import { isAuthSelector, getIdSelector } from '../../redux/auth-selector';
 import {
   getArticleLoadingSelector,
   getCurrentArticleLikesCount,
-  getLikedUsersSelector,
+  getLikedUsersSelector, getLikesSelector,
 } from '../../redux/articles-selectors';
 
 const Like = styled.img.attrs((props) => ({ src: props.img }))`
@@ -146,11 +146,11 @@ const DataPost = styled.div`
 
 class Card extends React.Component {
   onLike = (id, likes, userId) => () => {
-    const { isAuth, isLoading } =this.props;
+    const { isAuth, isLoading, likedUsers, stateLikes } =this.props;
     if (!isLoading) {
       if (isAuth) {
         const { setLike } = this.props;
-        setLike(id, likes, userId);
+        setLike(id, likes, userId, likedUsers, stateLikes);
       }
     }
   }
@@ -220,6 +220,7 @@ const mapStateToProps = state => ({
   userId: getIdSelector(state),
   currentArticleLikes: getCurrentArticleLikesCount(state),
   isLoading: getArticleLoadingSelector(state),
+  stateLikes: getLikesSelector(state),
 })
 
 export default connect(
